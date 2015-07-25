@@ -1,3 +1,4 @@
 angular.module('mjTables', [
-    'ngRoute'
+    'ngRoute',
+    'restangular'
 ]);

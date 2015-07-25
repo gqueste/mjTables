@@ -14,11 +14,11 @@ connection.connect(function(err){
 
 app.use(bodyParser.json());
 
-app.get("/api", function(req, res){
+app.get("/api/v1", function(req, res){
 	res.send('mjTables API is running');
 });
 
-app.get("/api/users",function(req,res){
+app.get("/api/v1/users",function(req,res){
 	connection.query('SELECT * from user', function(err, rows) {
 		if (!err){
 		    res.send(rows);
@@ -28,7 +28,7 @@ app.get("/api/users",function(req,res){
   	});
 });
 
-app.post("/api/users",function(req,res){
+app.post("/api/v1/users",function(req,res){
 	var post = {
 		username : req.body.username,
 		password : req.body.password,
@@ -40,7 +40,7 @@ app.post("/api/users",function(req,res){
 	})
 });
 
-app.get("/api/users/:id",function(req,res){
+app.get("/api/v1/users/:id",function(req,res){
 	connection.query('SELECT * from user where id = ?', [req.params.id] , function(err, rows) {
 		if (!err && rows.length > 0){
 		    res.send(rows);
@@ -50,7 +50,7 @@ app.get("/api/users/:id",function(req,res){
   	});
 });
 
-app.put("/api/users/:id",function(req, res){
+app.put("/api/v1/users/:id",function(req, res){
 	var put = {
 		username : req.body.username,
 		password : req.body.password,

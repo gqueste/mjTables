@@ -1,6 +1,6 @@
 angular.module('mjTables').
 
-    config(function($routeProvider){
+    config(function($routeProvider, RestangularProvider){
         $routeProvider
             .when('/', {
                 templateUrl: 'partials/index.jade',
@@ -9,4 +9,6 @@ angular.module('mjTables').
             .otherwise({
                 redirectTo: '/'
             });
+
+        RestangularProvider.setBaseUrl('http://localhost:3000/api/v1');
     });

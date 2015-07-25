@@ -16,7 +16,8 @@
     "angular-route": "^1.4.1",
     "angular-moment": "^0.10.1",
     "angular-cookies": "^1.4.2",
-    "bootstrap": "^3.3.5"
+    "bootstrap": "^3.3.5",
+    "restangular": "^1.5.1"
   },
   "devDependencies": {
     "karma": "^0.12.37",
