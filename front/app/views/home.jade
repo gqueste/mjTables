@@ -1,0 +1,20 @@
+doctype html
+html
+    head
+        title Gestionnaire de tables de Jeu de Rôle
+        meta(charset='utf-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1')
+        meta(name='apple-mobile-web-app-capable', content='yes')
+        meta(name='apple-mobile-web-app-status-bar-style', content='black')
+        link(rel='stylesheet', href='/node_modules/bootstrap/dist/css/bootstrap.css')
+        link(rel='stylesheet', href='/node_modules/bootstrap/dist/css/bootstrap-theme.css')
+    body(ng-app='mjTables')
+        div(ng-view)
+        script(src='/node_modules/moment/moment.js')
+        script(src='/node_modules/angular/angular.js')
+        script(src='/node_modules/angular-route/angular-route.js')
+        script(src='/node_modules/angular-moment/angular-moment.js')
+        script(src='/node_modules/angular-cookies/angular-cookies.js')
+        script(src='/scripts/app.js')
+        script(src='/scripts/app_config.js')
+        script(src='/scripts/pages/index/index_controller.js')

@@ -1,0 +1,27 @@
+{
+  "name": "mjTables_Front",
+  "version": "0.0.0",
+  "main": "server.js",
+  "author": "gqueste",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.8.5",
+    "jade": "^1.5.0",
+    "router": "^1.1.1",
+    "lodash": "^3.10.0",
+    "moment": "^2.10.3",
+    "angular": "^1.4.1",
+    "angular-route": "^1.4.1",
+    "angular-moment": "^0.10.1",
+    "angular-cookies": "^1.4.2",
+    "bootstrap": "^3.3.5"
+  },
+  "devDependencies": {
+    "karma": "^0.12.37",
+    "karma-jasmine": "^0.3.6 ",
+    "karma-chrome-launcher": "^0.2.0",
+    "angular-mocks": "^1.4.2"
+  }
+}
