@@ -1,0 +1,13 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "author": "gqueste",
+  "scripts": {
+    "start" : "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.8.5",
+    "mysql": "^2.8.0",
+    "body-parser" : "^1.13.2"
+  }
+}
