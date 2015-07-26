@@ -1,2 +1,13 @@
-div
-    h1 Bonjour le monde !
+div.container
+    div.jumbotron
+        h1 Bienvenue sur le gestionnaire de Tables de Jeu de Role
+        form.form-inline.text-center
+            div.form-group
+                label.sr-only Pseudo
+                input.form-control(type="text", ng-model="username", placeholder="Pseudo")
+            div.form-group
+                label.sr-only Mot de passe
+                input.form-control(type="password", ng-model="password", placeholder="Mot de passe")
+            button.btn.btn-primary(type="submit" ng-click="connecter(username, password)") Se connecter
+        div.text-center
+            a Pas encore membre ? Inscrivez vous.
