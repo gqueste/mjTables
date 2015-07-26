@@ -8,6 +8,9 @@
   "dependencies": {
     "express": "^4.8.5",
     "mysql": "^2.8.0",
-    "body-parser" : "^1.13.2"
+    "body-parser" : "^1.13.2",
+    "jsonwebtoken" : "^5.0.4",
+    "morgan" : "^1.6.1",
+    "crypto-js" : "^3.1.5"
   }
 }
