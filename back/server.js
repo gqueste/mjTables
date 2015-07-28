@@ -7,6 +7,7 @@ var morgan     = require('morgan');
 var jwt    	   = require('jsonwebtoken');
 var Users 	   = require("./users");
 var SHA256 	   = require("crypto-js/sha256");
+var createUserCode = "secretCodeForUserCreation";
 
 var secret = 'mjTablesVerySecretChuttt';
 
@@ -60,12 +61,18 @@ app.post("/api/v1/users",function(req,res){
 		password : SHA256(req.body.password),
 		email    : req.body.email
 	};
-	Users.insertUser(connection, user, function(id){
-		if(!id.error)
-			res.status(201).send({id: id});
-		else
-			res.status(500).send(id);
-	});
+	var code = req.body.code;
+	if(code === createUserCode){
+		Users.insertUser(connection, user, function(id){
+			if(!id.error)
+				res.status(201).send({id: id});
+			else
+				res.status(500).send(id);
+		});
+	}
+	else{
+		res.sendStatus(401);
+	}
 });
 
 app.get("/api/v1/users/:id",function(req,res){
