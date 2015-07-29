@@ -5,10 +5,19 @@ angular.module('mjTables').
 
         return{
             estConnecte : estConnecte,
-            token : token
+            getToken : getToken,
+            setToken : setToken
         };
 
         function estConnecte(){
-            return token !== undefined;
+            return getToken() !== undefined;
+        }
+
+        function getToken(){
+            return token;
+        }
+
+        function setToken(tok){
+            token = tok;
         }
     }]);

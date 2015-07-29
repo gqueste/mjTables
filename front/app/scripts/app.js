@@ -1,5 +1,6 @@
 angular.module('mjTables', [
     'ngRoute',
     'restangular',
-    'ui.router'
+    'ui.router',
+    'ui.bootstrap'
 ]);

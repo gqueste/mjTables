@@ -10,4 +10,4 @@ div.container
                 input.form-control(type="password", ng-model="password", placeholder="Mot de passe")
             button.btn.btn-primary(type="submit" ng-click="connecter(username, password)") Se connecter
         div.text-center
-            a Pas encore membre ? Inscrivez vous.
+            a(ui-sref='register') Pas encore membre ? Inscrivez vous.

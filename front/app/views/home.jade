@@ -1,13 +1,15 @@
 doctype html
 html
     head
-        title Gestionnaire de tables de Jeu de Rôle
+        title Gestionnaire de tables de Jeu de Rï¿½le
         meta(charset='utf-8')
         meta(name='viewport', content='width=device-width, initial-scale=1')
         meta(name='apple-mobile-web-app-capable', content='yes')
         meta(name='apple-mobile-web-app-status-bar-style', content='black')
         link(rel='stylesheet', href='/node_modules/bootstrap/dist/css/bootstrap.css')
         link(rel='stylesheet', href='/node_modules/bootstrap/dist/css/bootstrap-theme.css')
+        link(rel='stylesheet', href='/node_modules/font-awesome/css/font-awesome.css')
+        link(rel='stylesheet', href='/styles/main.css')
     body(ng-app='mjTables')
         <div class="container-fluid" ui-view></div>
         script(src='/node_modules/lodash/index.js')
@@ -18,8 +20,12 @@ html
         script(src='/node_modules/angular-moment/angular-moment.js')
         script(src='/node_modules/angular-cookies/angular-cookies.js')
         script(src='/node_modules/restangular/dist/restangular.js')
+        script(src='/node_modules/angular-ui-bootstrap/index.js')
         script(src='/scripts/app.js')
         script(src='/scripts/app_config.js')
         script(src='/scripts/pages/index/index_controller.js')
         script(src='/scripts/pages/index/index_route.js')
+        script(src='/scripts/pages/register/register_controller.js')
+        script(src='/scripts/pages/register/register_route.js')
         script(src='/scripts/services/user_service.js')
+        script(src='/scripts/services/connexion_service.js')

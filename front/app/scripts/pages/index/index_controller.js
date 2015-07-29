@@ -1,17 +1,20 @@
 angular.module('mjTables').
 
-    controller('IndexCtrl', ['$scope', 'User', function($scope, User){
-        /*User.getAll()
-            .then(function(data){
-                console.log(data);
-            })
-            .catch(function(error){
-                console.log(error);
-            });*/
+    controller('IndexCtrl', ['$scope', 'UserAPI', function($scope, UserAPI){
 
         $scope.connecter = function(username, password){
-            console.log(username);
-            console.log(password);
+            var user = {
+                username: username,
+                password: password
+            };
+
+            UserAPI.login(user).then(function(success){
+                if(success){
+                    console.log("connecte");
+                }
+            }).catch(function(error){
+               console.log(error.data);
+            });
         };
 
     }]);

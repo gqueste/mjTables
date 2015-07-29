@@ -4,7 +4,7 @@ module.exports = {
 		return mysql.createConnection({
 			host     : 'localhost',
 			user     : 'root',
-			password : 'admin',
+			password : 'password',
 			database : 'mjtables'
 		});
 	}

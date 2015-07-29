@@ -1,0 +1,21 @@
+div.container
+    h1 Inscrivez vous
+    form.form-horizontal
+        div.form-group(ng-class="{'has-error' : usernameError, 'has-success' : freeUsername}")
+            label.col-sm-3.control-label Pseudo
+            div.col-sm-8
+                input.form-control(type="text", ng-model="username", placeholder="Pseudo", ng-change="controlUsername()")
+            i.col-sm-1.fa.fa-times-circle.fa-2x.error(ng-if='usernameError')
+        div.form-group
+            label.col-sm-3.control-label Mail
+            div.col-sm-9
+                input.form-control(type="email", ng-model="mail", placeholder="Adresse mail")
+        div.form-group
+            label.col-sm-3.control-label Mot de passe
+            div.col-sm-9
+                input.form-control(type="password", ng-model="password", placeholder="Mot de passe")
+        div.form-group
+            label.col-sm-3.control-label Confirmez le mot de passe
+            div.col-sm-9
+                input.form-control(type="password", ng-model="passwordVerif", placeholder="Mot de passe")
+        button.btn.btn-primary(type="submit" ng-click="register()" ng-disabled="errorMessage") S'inscrire

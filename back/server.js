@@ -32,7 +32,7 @@ var allowCrossDomain = function(req, res, next) {
 
 	// intercept OPTIONS method
 	if ('OPTIONS' == req.method) {
-		res.send(200);
+		res.sendStatus(200);
 	}
 	else {
 		next();
@@ -46,14 +46,26 @@ app.get("/api/v1", function(req, res){
 });
 
 app.get("/api/v1/users",function(req,res){
-	Users.getAllUsers(connection, function(users){
+	var sendUsers = function(users){
 		if(!users.error){
 			res.status(200).send(users);
 		}
 		else
 			res.status(500).send(users);
-	});
+	};
+
+	if(req.query.username){
+		Users.findByUsername(connection, req.query.username, sendUsers);
+	}
+	else if(req.query.mail){
+		Users.findByMail(connection, req.query.mail, sendUsers);
+	}
+	else{
+		Users.getAllUsers(connection, sendUsers);
+	}
 });
+
+
 
 app.post("/api/v1/users",function(req,res){
 	var user = {
@@ -98,9 +110,9 @@ app.put("/api/v1/users/:id",function(req, res){
 
 	checkToken(req, function(result){
 		if(!result.error){
-			Users.findUserById(connection, req.params.id, function(result){
-				if(!result.error){
-					if(result.length > 0){
+			Users.findUserById(connection, req.params.id, function(userFound){
+				if(!userFound.error){
+					if(userFound.length > 0){
 						Users.updateUser(connection, user, req.params.id, function(updatedUser){
 							if(!updatedUser.error){
 								res.sendStatus(200);
@@ -111,16 +123,16 @@ app.put("/api/v1/users/:id",function(req, res){
 						});
 					}
 					else{
-						res.status(404).send(result);
+						res.status(404).send('No user by this username');
 					}
 				}
 				else {
-					res.status(500).send(result);
+					res.status(500).send(userFound);
 				}
 			});
 		}
 		else{
-			res.status(403).send(result);
+			res.status(403).send(result.error);
 		}
 	});
 });
@@ -132,7 +144,7 @@ app.post('/api/v1/users/login',	function(req, res) {
 			if(user.length > 0){
 				user = user[0];
 				if(user.password != SHA256(req.body.password)){
-					res.status(401).send({message: "Password incorrect"});
+					res.status(401).send("Password incorrect");
 				}
 				else{
 					var token = jwt.sign(user, app.get('superSecret'), {
@@ -142,7 +154,7 @@ app.post('/api/v1/users/login',	function(req, res) {
 				}
 			}
 			else{
-				res.status(404).send({message : 'No user by this username'});
+				res.status(404).send('No user by this username');
 			}
 		}
 		else{

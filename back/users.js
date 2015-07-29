@@ -53,5 +53,16 @@ module.exports = {
                 callback(err);
             }
         })
+    },
+    findByMail : function(connection, mail, callback){
+        connection.query("Select * from user where email = ?", [mail], function(err, rows) {
+            if(!err){
+                callback(rows);
+            }
+            else{
+                err.error = true;
+                callback(err);
+            }
+        })
     }
 };
