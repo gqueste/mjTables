@@ -8,45 +8,11 @@ angular.module('mjTables').
         $scope.passwordVerif = '';
 
         $scope.register = function(){
-            initErrors();
-            if($scope.username === ''){
-                $scope.usernameError = "Il manque un nom d'utilisateur. ";
-                $scope.errorMessage += $scope.usernameError;
-            }
-            if($scope.mail === ''){
-                $scope.mailError = "Il manque un nom d'utilisateur. ";
-                $scope.errorMessage += $scope.mailError;
-            }
-            if($scope.password === ''){
-                $scope.passwordError = "Il manque un mot de passe. ";
-                $scope.errorMessage += $scope.passwordError;
-            }
-            if($scope.passwordVerif === ''){
-                $scope.passwordVerifError = "Il manque la verification du mot de passe. ";
-                $scope.errorMessage += $scope.passwordVerifError
-            }
-            if($scope.password !== $scope.passwordVerif){
-                $scope.verifError = "Mot de passe et verification incorrects. ";
-                $scope.errorMessage += $scope.verifError;
-            }
             control();
         };
 
         var control = function(){
-            UserAPI.findByUsername($scope.username).then(function(users){
-                console.log(users);
-            }).catch(function(error){
-                console.log(error);
-            })
-        };
-
-        var initErrors = function(){
-            $scope.errorMessage = '';
-            $scope.usernameError = '';
-            $scope.mailError = '';
-            $scope.passwordError = '';
-            $scope.passwordVerifError = '';
-            $scope.verifError = '';
+            console.log('hello');
         };
 
         $scope.controlUsername = function(){
@@ -60,6 +26,48 @@ angular.module('mjTables').
                     console.log(error);
                 });
             }
+        };
+
+        $scope.controlMail = function(){
+            $scope.mailError = '';
+            if($scope.mail !== ''){
+                if(! /[^\s@]+@[^\s@]+\.[^\s@]+/.test($scope.mail)){
+                    $scope.mailError = "Adresse mail non valide.";
+                }
+                else{
+                    UserAPI.findByMail($scope.mail).then(function(users){
+                        if(users.length > 0){
+                            $scope.mailError = "Il existe deja quelqu'un avec cette adresse";
+                        }
+                    }).catch(function(error){
+                        console.log(error);
+                    });
+                }
+            }
+        };
+
+        $scope.controlPassword = function(){
+            $scope.passwordError = '';
+            if($scope.password !== ''){
+                if($scope.password.length < 5){
+                    $scope.passwordError = "5 caractères ou plus pour votre mot de passe.";
+                }
+            }
+        };
+
+        $scope.controlVerifPassword = function(){
+            $scope.passwordVerifError = '';
+            if($scope.passwordVerif !== ''){
+                if($scope.password !== $scope.passwordVerif){
+                    $scope.passwordVerifError = "Le mot de passe et la vérification ne sont pas identiques";
+                }
+            }
+        };
+
+        $scope.registerDisabled = function(){
+            return !$scope.username || !$scope.mail || !$scope.password || !$scope.passwordVerif
+                || $scope.usernameError || $scope.mailError || $scope.passwordError
+                || $scope.passwordVerifError || $scope.verifError;
         }
 
     }]);
