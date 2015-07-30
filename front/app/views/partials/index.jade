@@ -2,12 +2,14 @@ div.container
     div.jumbotron
         h1 Bienvenue sur le gestionnaire de Tables de Jeu de Rôle
         form.form-inline.text-center
-            div.form-group
+            div.form-group(ng-class="{'has-error' : messageError}")
                 label.sr-only Pseudo
                 input.form-control(type="text", ng-model="username", placeholder="Pseudo")
-            div.form-group
+            div.form-group(ng-class="{'has-error' : messageError}")
                 label.sr-only Mot de passe
                 input.form-control(type="password", ng-model="password", placeholder="Mot de passe")
+            div.form-group
+                i.fa.fa-times-circle.fa-2x.error(ng-if='messageError', tooltip="{{messageError}}")
             button.btn.btn-primary(type="submit" ng-click="connecter(username, password)") Se connecter
         div.text-center
             a(ui-sref='register') Pas encore membre ? Inscrivez vous.

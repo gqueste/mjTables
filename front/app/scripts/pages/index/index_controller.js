@@ -1,6 +1,6 @@
 angular.module('mjTables').
 
-    controller('IndexCtrl', ['$scope', 'UserAPI', function($scope, UserAPI){
+    controller('IndexCtrl', ['$scope', 'UserAPI', '$state', function($scope, UserAPI, $state){
 
         $scope.connecter = function(username, password){
             var user = {
@@ -10,10 +10,10 @@ angular.module('mjTables').
 
             UserAPI.login(user).then(function(success){
                 if(success){
-                    console.log("connecte");
+                    $state.go('tablesOverview');
                 }
             }).catch(function(error){
-               console.log(error.data);
+               $scope.messageError = error.data;
             });
         };
 

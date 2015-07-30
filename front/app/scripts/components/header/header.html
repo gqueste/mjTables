@@ -15,7 +15,7 @@
 
             <div class="collapse navbar-collapse" id="js-navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#" ng-click="logout()">Se deconnecter</a></li>
+                    <li ng-if="ConnexionService.estConnecte()"><a href="#" ng-click="logout()">Se deconnecter</a></li>
                 </ul>
             </div>
         </div>

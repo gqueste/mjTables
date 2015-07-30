@@ -1,7 +1,7 @@
 angular.module('mjTables').
 
-    controller('HeaderCtrl', ['ConnexionService', '$state', function(ConnexionService, $state){
-        $scope.ConnexionService
+    controller('HeaderCtrl', ['$scope', 'ConnexionService', '$state', function($scope, ConnexionService, $state){
+        $scope.ConnexionService = ConnexionService;
 
         $scope.logout = function(){
             ConnexionService.logOut();
