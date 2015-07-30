@@ -22,7 +22,7 @@ module.exports = {
         });
     },
     insertUser : function(connection, user, callback){
-        connection.query("INSERT INTO user SET ?", user, function(err, result){
+        connection.query("INSERT INTO user SET ?", [user], function(err, result){
             if(!err)
                 callback(result.insertId);
             else{

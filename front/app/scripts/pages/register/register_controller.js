@@ -1,6 +1,6 @@
 angular.module('mjTables').
 
-    controller('RegisterCtrl', ['$scope', 'UserAPI', function($scope, UserAPI){
+    controller('RegisterCtrl', ['$scope', 'UserAPI', '$state', function($scope, UserAPI, $state){
 
         $scope.username = '';
         $scope.mail = '';
@@ -8,11 +8,21 @@ angular.module('mjTables').
         $scope.passwordVerif = '';
 
         $scope.register = function(){
-            control();
-        };
-
-        var control = function(){
-            console.log('hello');
+            var user = {
+                username : $scope.username,
+                email : $scope.mail,
+                password : $scope.password
+            };
+            UserAPI.createUser(user).then(function(){
+                UserAPI.login(user).then(function(){
+                    $state.go('tablesOverview');
+                }).catch(function(error){
+                    console.log(error);
+                })
+            }).catch(function(error){
+                    console.log(error);
+                }
+            );
         };
 
         $scope.controlUsername = function(){
@@ -50,7 +60,7 @@ angular.module('mjTables').
             $scope.passwordError = '';
             if($scope.password !== ''){
                 if($scope.password.length < 5){
-                    $scope.passwordError = "5 caractères ou plus pour votre mot de passe.";
+                    $scope.passwordError = "5 caractï¿½res ou plus pour votre mot de passe.";
                 }
             }
         };
@@ -59,7 +69,7 @@ angular.module('mjTables').
             $scope.passwordVerifError = '';
             if($scope.passwordVerif !== ''){
                 if($scope.password !== $scope.passwordVerif){
-                    $scope.passwordVerifError = "Le mot de passe et la vérification ne sont pas identiques";
+                    $scope.passwordVerifError = "Le mot de passe et la vï¿½rification ne sont pas identiques";
                 }
             }
         };
@@ -67,7 +77,7 @@ angular.module('mjTables').
         $scope.registerDisabled = function(){
             return !$scope.username || !$scope.mail || !$scope.password || !$scope.passwordVerif
                 || $scope.usernameError || $scope.mailError || $scope.passwordError
-                || $scope.passwordVerifError || $scope.verifError;
+                || $scope.passwordVerifError;
         }
 
     }]);

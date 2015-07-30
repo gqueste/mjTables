@@ -6,12 +6,12 @@ angular.module('mjTables').
                 url: "/",
                 templateUrl: 'partials/index.jade',
                 controller: 'IndexCtrl',
-                onEnter: ['$state', function($state){
-                    //redirige vers la page de connexion si la Connexion n'existe pas
-                    /*
-                    if(!ConnexionService.estConnecte()){
-                        $state.go('connexion');
-                    }*/
+                onEnter: ['$state', '$timeout', 'ConnexionService', function($state, $timeout, ConnexionService){
+                    if(ConnexionService.estConnecte()){
+                        $timeout(function(){
+                            $state.go('tablesOverview');
+                        }, 10);
+                    }
                 }]
             })
     });

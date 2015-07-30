@@ -2,13 +2,17 @@ angular.module('mjTables').
 
     factory('UserAPI', ['Restangular', 'ConnexionService', function(Restangular, ConnexionService){
 
+        var createUserCode = "secretCodeForUserCreation";
+
         var service = Restangular.service('users');
 
         return {
             getAll: getAll,
             login: login,
             findByUsername: findByUsername,
-            findByMail: findByMail
+            findByMail: findByMail,
+            createUser : createUser,
+            getUser : getUser
         };
 
         function getAll(){
@@ -46,6 +50,29 @@ angular.module('mjTables').
         function findByMail(mail){
             return service
                 .getList({mail : mail})
+                .then(function(data){
+                    return data;
+                })
+                .catch(function(error){
+                    throw error;
+                });
+        }
+
+        function createUser(user){
+            user.code = createUserCode;
+            return service
+                .post(user)
+                .then(function(data){
+                    return data;
+                })
+                .catch(function(error){
+                    throw error;
+                });
+        }
+
+        function getUser(id){
+            return service
+                .one(id)
                 .then(function(data){
                     return data;
                 })

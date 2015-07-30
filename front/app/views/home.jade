@@ -11,6 +11,7 @@ html
         link(rel='stylesheet', href='/node_modules/font-awesome/css/font-awesome.css')
         link(rel='stylesheet', href='/styles/main.css')
     body(ng-app='mjTables')
+        mjtables-header
         <div class="container-fluid" ui-view></div>
         script(src='/node_modules/lodash/index.js')
         script(src='/node_modules/moment/moment.js')
@@ -27,5 +28,9 @@ html
         script(src='/scripts/pages/index/index_route.js')
         script(src='/scripts/pages/register/register_controller.js')
         script(src='/scripts/pages/register/register_route.js')
+        script(src='/scripts/pages/tables/tablesOverview_route.js')
+        script(src='/scripts/pages/tables/tablesOverview_controller.js')
+        script(src='/scripts/components/header/header_controller.js')
+        script(src='/scripts/components/header/header_directive.js')
         script(src='/scripts/services/user_service.js')
         script(src='/scripts/services/connexion_service.js')
