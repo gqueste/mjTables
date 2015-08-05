@@ -1,9 +1,23 @@
-var req_info = 'select tables.id as table_id, users.id as mj_id, users.username as mj_username, games.id as game_id, games.nom as game_nom, status.id as status_id, status.libelle as status_libelle, tables.description, frequences.id as frequence_id, frequences.libelle as frequence_libelle, tables.nbJoueurs, tables.nbJoueursTotal ';
-var target = 'from tables join users on tables.mj = users.id join games on tables.game = games.id join status on tables.status = status.id join frequences on tables.frequence = frequences.id ';
-var req_header = req_info + target;
 module.exports = {
     findTableById : function(connection, id, callback){
-        var req = req_header + 'where tables.id = ? ';
+        var req = 'select tables.id as table_id, ';
+        req += 'users.id as mj_id, ';
+        req += 'users.username as mj_username, ';
+        req += 'games.id as game_id, ';
+        req += 'games.nom as game_nom, ';
+        req += 'status.id as status_id, ';
+        req += 'status.libelle as status_libelle, ';
+        req += 'tables.description, ';
+        req += 'frequences.id as frequence_id, ';
+        req += 'frequences.libelle as frequence_libelle, ';
+        req += 'tables.nbJoueurs, ';
+        req += 'tables.nbJoueursTotal ';
+        req += 'from tables ';
+        req += 'join users on tables.mj = users.id ';
+        req += 'join games on tables.game = games.id ';
+        req += 'join status on tables.status = status.id ';
+        req += 'join frequences on tables.frequence = frequences.id ';
+        req += 'where tables.id = ? ';
         connection.query(req, [id] , function(err, rows) {
             if (!err){
                 callback(rows)
@@ -15,7 +29,7 @@ module.exports = {
         });
     },
     getAllTables : function(connection, callback){
-        connection.query(req_header, function(err, rows) {
+        connection.query('select id from tables', function(err, rows) {
             if (!err){
                 callback(rows);
             }
@@ -48,10 +62,7 @@ module.exports = {
         });
     },
     findPlayersForTable : function(connection, id, callback) {
-        var req = 'select users.id as user_id, users.username, users.email from users_tables ';
-        req += 'join users on users.id = users_tables.user_id ';
-        req += 'where users_tables.table_id = ?';
-        connection.query(req, [id], function(err, rows) {
+        connection.query('select users.id as user_id from users_tables where users_tables.table_id = ?', [id], function(err, rows) {
             if(!err){
                 callback(rows);
             }
@@ -62,7 +73,7 @@ module.exports = {
         })
     },
     findTablesForMJ : function(connection, id, callback) {
-        var req = req_header + 'where mj_id = ? ';
+        var req = 'select id from tables where mj = ? ';
         connection.query(req, [id], function(err, rows) {
             if(!err){
                 callback(rows);
@@ -74,10 +85,18 @@ module.exports = {
         })
     },
     findTablesForPlayer : function(connection, id, callback) {
-        var req = req_header;
-        req += 'join users_tables on users_tables.table_id = tables.id ';
-        req += 'where users_tables.user_id = ? ';
-        connection.query(req, [id], function(err, rows) {
+        connection.query('select table_id from users_tables where users_tables.user_id = ?', [id], function(err, rows) {
+            if(!err){
+                callback(rows);
+            }
+            else{
+                err.error = true;
+                callback(err);
+            }
+        })
+    },
+    findTablesForGame : function(connection, id, callback) {
+        connection.query('select id from tables where game = ?', [id], function(err, rows) {
             if(!err){
                 callback(rows);
             }

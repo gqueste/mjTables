@@ -5,12 +5,16 @@ var database   = require("./back/database");
 var connection = database.connection();
 var morgan     = require('morgan');
 var jwt    	   = require('jsonwebtoken');
-var Users 	   = require("./back/users");
-var Tables     = require('./back/tables');
 var SHA256 	   = require("crypto-js/sha256");
 var createUserCode = "secretCodeForUserCreation";
-
 var secret = 'mjTablesVerySecretChuttt';
+
+var Users 	   = require("./back/users");
+var Tables     = require('./back/tables');
+var Frequences = require('./back/frequences');
+var Games      = require('./back/games');
+var Status     = require('./back/status');
+
 
 app.set('superSecret', secret);
 app.use(morgan('dev'));
@@ -199,6 +203,9 @@ app.get('/api/v1/tables', function(req, res){
     }
     else if(req.query.player){
         Tables.findTablesForPlayer(connection, req.query.player, sendTables);
+    }
+    else if(req.query.game){
+        Tables.findTablesForGame(connection, req.query.game, sendTables);
     }
     else {
         Tables.getAllTables(connection, sendTables);
@@ -412,8 +419,80 @@ app.delete('/api/v1/tables/:idTable/players/:idUser', function(req, res){
 });
 
 
+/**** FREQUENCES ****/
+app.get('/api/v1/frequences', function(req, res){
+    Frequences.getAllFrequences(connection, function(freqs){
+        if(!freqs.error){
+            res.status(200).send(freqs);
+        }
+        else{
+            res.status(500).send(freqs);
+        }
+    });
+});
+
+app.get('/api/v1/frequences/:id', function(req, res){
+    Frequences.findFrequencesById(connection, req.params.id, function(freq){
+        if(!freq.error){
+            if(freq.length > 0){
+                res.status(200).send(freq);
+            }
+            else{
+                res.status(404).send(freq);
+            }
+        }
+        else{
+            res.status(500).send(freq);
+        }
+    })
+});
 
 
+/**** STATUS ****/
+app.get('/api/v1/status', function(req, res){
+    Status.getAllStatus(connection, function(status){
+        if(!status.error){
+            res.status(200).send(status);
+        }
+        else{
+            res.status(500).send(status);
+        }
+    });
+});
+
+app.get('/api/v1/status/:id', function(req, res){
+    Status.findStatusById(connection, req.params.id, function(status){
+        if(!status.error){
+            if(status.length > 0){
+                res.status(200).send(status);
+            }
+            else{
+                res.status(404).send(status);
+            }
+        }
+        else{
+            res.status(500).send(status);
+        }
+    })
+});
+
+
+/**** GAMES ****/
+app.get('/api/v1/games', function(req, res){
+
+});
+
+app.get('/api/v1/games/:id', function(req, res){
+
+});
+
+app.put('/api/v1/games/:id', function(req, res){
+
+});
+
+app.post('/api/v1/games', function(req, res){
+
+});
 
 var checkToken = function(req, callback){
     // check header or url parameters or post parameters for token
