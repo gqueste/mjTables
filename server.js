@@ -6,6 +6,7 @@ var connection = database.connection();
 var morgan     = require('morgan');
 var jwt    	   = require('jsonwebtoken');
 var Users 	   = require("./back/users");
+var Tables     = require('./back/tables');
 var SHA256 	   = require("crypto-js/sha256");
 var createUserCode = "secretCodeForUserCreation";
 
@@ -61,6 +62,8 @@ app.get("/api/v1", function(req, res){
     res.send('mjTables API is running');
 });
 
+
+/**** USERS ****/
 app.get("/api/v1/users",function(req,res){
     var sendUsers = function(users){
         if(!users.error){
@@ -139,7 +142,7 @@ app.put("/api/v1/users/:id",function(req, res){
                         });
                     }
                     else{
-                        res.status(404).send('No user by this username');
+                        res.status(404).send('No user by this id');
                     }
                 }
                 else {
@@ -178,6 +181,237 @@ app.post('/api/v1/users/login',	function(req, res) {
         }
     });
 });
+
+
+/**** TABLES ****/
+
+app.get('/api/v1/tables', function(req, res){
+    var sendTables = function(tables){
+        if(!tables.error){
+            res.status(200).send(tables);
+        }
+        else
+            res.status(500).send(tables);
+    };
+
+    if(req.query.mj){
+        Tables.findTablesForMJ(connection, req.query.mj, sendTables);
+    }
+    else if(req.query.player){
+        Tables.findTablesForPlayer(connection, req.query.player, sendTables);
+    }
+    else {
+        Tables.getAllTables(connection, sendTables);
+    }
+});
+
+
+app.post('/api/v1/tables', function(req, res){
+    var table = {
+        mj: req.body.mj,
+        game: req.body.game,
+        status: req.body.status,
+        description: req.body.description,
+        frequence: req.body.frequence,
+        nbJoueurs: req.body.nbJoueurs,
+        nbJoueursTotal: req.body.nbJoueursTotal
+    };
+    checkToken(req, function(result){
+        if(!result.error){
+            Tables.insertTable(connection, table, function(id){
+                if(!id.error)
+                    res.status(201).send({id: id});
+                else
+                    res.status(500).send(id);
+            });
+        }
+        else{
+            res.status(403).send(result.error);
+        }
+    });
+});
+
+
+app.get('/api/v1/tables/:id', function(req,res){
+    Tables.findTableById(connection, req.params.id, function(table){
+        if(!table.error){
+            if(table.length > 0)
+                res.status(200).send(table);
+            else
+                res.status(404).send(table);
+        }
+        else{
+            res.status(500).send(table);
+        }
+    });
+});
+
+app.put('/api/v1/tables/:id', function(req,res){
+    var table = {
+        mj: req.body.mj,
+        game: req.body.game,
+        status: req.body.status,
+        description: req.body.description,
+        frequence: req.body.frequence,
+        nbJoueurs: req.body.nbJoueurs,
+        nbJoueursTotal: req.body.nbJoueursTotal
+    };
+    checkToken(req, function(result){
+        if(!result.error){
+            Tables.findTableById(connection, req.params.id, function(tableFound){
+                if(!tableFound.error){
+                    if(tableFound.length > 0){
+                        Tables.updateTable(connection, table, req.params.id, function(updatedTable){
+                            if(!updatedTable.error){
+                                res.sendStatus(200);
+                            }
+                            else{
+                                res.status(500).send(updatedTable);
+                            }
+                        });
+                    }
+                    else{
+                        res.status(404).send('No table by this id');
+                    }
+                }
+                else {
+                    res.status(500).send(tableFound);
+                }
+            });
+        }
+        else{
+            res.status(403).send(result.error);
+        }
+    });
+});
+
+app.get('/api/v1/tables/:id/players', function(req, res){
+    Tables.findTableById(connection, req.params.id, function(table){
+        if(!table.error){
+            if(table.length > 0){
+                Tables.findPlayersForTable(connection, req.params.id, function(players){
+                    if(!players.error){
+                        res.status(200).send(players);
+                    }
+                    else{
+                        res.status(500).send(players);
+                    }
+                });
+            }
+            else
+                res.status(404).send(table);
+        }
+        else{
+            res.status(500).send(table);
+        }
+    });
+});
+
+app.get('/api/v1/tables/:id/players', function(req, res){
+    Tables.findTableById(connection, req.params.id, function(table){
+        if(!table.error){
+            if(table.length > 0){
+                Tables.findPlayersForTable(connection, req.params.id, function(players){
+                    if(!players.error){
+                        res.status(200).send(players);
+                    }
+                    else{
+                        res.status(500).send(players);
+                    }
+                });
+            }
+            else
+                res.status(404).send(table);
+        }
+        else{
+            res.status(500).send(table);
+        }
+    });
+});
+
+app.post('/api/v1/tables/:id/players', function(req, res){
+    var user_id = req.body.id;
+    var table_id = req.params.id;
+    checkToken(req, function(result){
+        if(!result.error){
+            Tables.findTableById(connection, table_id, function(table){
+                if(!table.error){
+                    if(table.length > 0){
+                        Users.findUserById(connection, user_id, function(user){
+                            if(!user.error){
+                                if(user.length > 0){
+                                    Tables.addPlayerToTable(connection, user_id, table_id, function(err){
+                                        if(!err.error){
+                                            res.sendStatus(200);
+                                        }
+                                        else{
+                                            res.status(500).send(err);
+                                        }
+                                    });
+                                }
+                                else
+                                    res.status(404).send(user);
+                            }
+                            else{
+                                res.status(500).send(user);
+                            }
+                        });
+                    }
+                    else
+                        res.status(404).send(table);
+                }
+                else{
+                    res.status(500).send(table);
+                }
+            });
+        }
+        else{
+            res.status(403).send(result.error);
+        }
+    });
+});
+
+app.delete('/api/v1/tables/:idTable/players/:idUser', function(req, res){
+    checkToken(req, function(result){
+       if(!result.error){
+           Tables.findTableById(connection, req.params.idTable, function(table){
+               if(!table.error){
+                   if(table.length > 0){
+                       Users.findUserById(connection, req.params.idUser, function(user){
+                           if(!user.error){
+                               if(user.length > 0){
+                                   Tables.removePlayerFromTable(connection, req.params.idUser, req.params.idTable, function(err){
+                                       if(!err.error){
+                                           res.sendStatus(200);
+                                       }
+                                       else{
+                                           res.status(500).send(err);
+                                       }
+                                   });
+                               }
+                               else
+                                   res.status(404).send(user);
+                           }
+                           else{
+                               res.status(500).send(user);
+                           }
+                       });
+                   }
+                   else
+                       res.status(404).send(table);
+               }
+               else{
+                   res.status(500).send(table);
+               }
+           });
+       }
+        else{
+           res.status(403).send(result.error);
+       }
+    });
+});
+
+
 
 
 

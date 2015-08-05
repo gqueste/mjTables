@@ -1,6 +1,6 @@
 module.exports = {
     findUserById : function(connection, id, callback){
-        connection.query('SELECT * from user where id = ?', [id] , function(err, rows) {
+        connection.query('SELECT * from users where id = ?', [id] , function(err, rows) {
             if (!err){
                 callback(rows)
             }
@@ -11,7 +11,7 @@ module.exports = {
         });
     },
     getAllUsers : function(connection, callback){
-        connection.query('SELECT * from user', function(err, rows) {
+        connection.query('SELECT * from users', function(err, rows) {
             if (!err){
                 callback(rows);
             }
@@ -22,7 +22,7 @@ module.exports = {
         });
     },
     insertUser : function(connection, user, callback){
-        connection.query("INSERT INTO user SET ?", [user], function(err, result){
+        connection.query("INSERT INTO users SET ?", [user], function(err, result){
             if(!err)
                 callback(result.insertId);
             else{
@@ -32,7 +32,7 @@ module.exports = {
         });
     },
     updateUser : function(connection, user, id, callback){
-        connection.query("UPDATE user set ? where id = ?", [user, id], function(err) {
+        connection.query("UPDATE users set ? where id = ?", [user, id], function(err) {
             if (!err){
                 user.id = id;
                 callback(user);
@@ -44,7 +44,7 @@ module.exports = {
         });
     },
     findByUsername : function(connection, username, callback) {
-        connection.query("Select * from user where username = ?", [username], function(err, rows) {
+        connection.query("Select * from users where username = ?", [username], function(err, rows) {
             if(!err){
                 callback(rows);
             }
@@ -55,7 +55,7 @@ module.exports = {
         })
     },
     findByMail : function(connection, mail, callback){
-        connection.query("Select * from user where email = ?", [mail], function(err, rows) {
+        connection.query("Select * from users where email = ?", [mail], function(err, rows) {
             if(!err){
                 callback(rows);
             }
