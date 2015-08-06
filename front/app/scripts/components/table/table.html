@@ -1,0 +1,41 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-10">
+                <a ui-sref="#">{{table.game_nom}}</a>
+                <span> par</span>
+                <a ui-sref="#"> {{table.mj_username}}</a></div>
+            <div class="col-md-2 text-right">
+                <a ui-sref="#" ng-if="isAdmin()">Changer statut</a>
+                <span> {{table.status_libelle}}</span></div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div>
+            <p>{{table.description}}</p>
+            <p>{{table.frequence_libelle}}</p>
+            <p>{{table.nbJoueurs}} / {{table.nbJoueursTotal}}</p>
+        </div>
+        <div ng-if="!isAlreadyPlayer()">
+            <button class="btn btn-primary">Joindre la table</button>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Joueur</th>
+            <th ng-if="isAdmin() || isAlreadyPlayer()">Quitter / Retirer</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="player in players">
+            <td><a ui-sref="#">{{player.username}}</a></td>
+            <td ng-if="isAdmin() || ConnexionService.getCurrentUserId() === player.id"><a ui-sref="#" class="fa fa-times-circle fa-2x"></a></td>
+        </tr>
+        </tbody>
+    </table>
+    <div ng-if="isAdmin() || isAlreadyPlayer()">
+        <button class="btn btn-primary">Envoyer message a la table</button>
+        <button class="btn btn-danger" ng-if="isAdmin()">Supprimer table</button>
+    </div>
+</div>

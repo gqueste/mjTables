@@ -113,7 +113,15 @@ module.exports = {
         };
         connection.query('INSERT INTO users_tables set ?',[user_table], function(err){
             if (!err){
-                callback();
+                connection.query('update tables set nbJoueurs = nbJoueurs+1 where id = ?', [table_id], function(err2){
+                    if(!err2){
+                        callback();
+                    }
+                    else{
+                        err2.error = true;
+                        callback(err2);
+                    }
+                });
             }
             else{
                 err.error = true;
@@ -124,12 +132,39 @@ module.exports = {
     removePlayerFromTable : function(connection, user_id, table_id, callback){
         connection.query('DELETE from users_tables where user_id = ? and table_id = ?', [user_id, table_id], function(err){
             if(!err){
-                callback();
+                connection.query('update tables set nbJoueurs = nbJoueurs-1 where id = ?', [table_id], function(err2){
+                    if(!err2){
+                        callback();
+                    }
+                    else{
+                        err2.error = true;
+                        callback(err2);
+                    }
+                });
             }
             else{
                 err.error = true;
                 callback(err);
             }
         })
+    },
+    deleteTable : function(connection, table_id, callback){
+        connection.query('DELETE from users_tables where table_id = ?', [table_id], function(err){
+            if(!err){
+                connection.query('Delete from tables where id = ?', [table_id], function(err2){
+                    if(!err2){
+                        callback();
+                    }
+                    else{
+                        err2.error = true;
+                        callback(err2);
+                    }
+                });
+            }
+            else{
+                err.error = true;
+                callback(err);
+            }
+        });
     }
 };

@@ -173,7 +173,10 @@ app.post('/api/v1/users/login',	function(req, res) {
                     var token = jwt.sign(user, app.get('superSecret'), {
                         expiresInMinutes: 1440 // expires in 24 hours
                     });
-                    res.status(200).send({token: token});
+                    res.status(200).send({
+                        token: token,
+                        id: user.id
+                    });
                 }
             }
             else{
@@ -253,6 +256,36 @@ app.get('/api/v1/tables/:id', function(req,res){
     });
 });
 
+app.delete('/api/v1/tables/:id', function(req,res){
+    checkToken(req, function(result){
+        if(!result.error){
+            Tables.findTableById(connection, req.params.id, function(table){
+                if(!table.error){
+                    if(table.length > 0){
+                        Tables.deleteTable(connection, req.params.id, function(err){
+                            if(!err.error){
+                                res.sendStatus(200);
+                            }
+                            else{
+                                res.status(500).send(err);
+                            }
+                        });
+                    }
+                    else
+                        res.status(404).send(table);
+                }
+                else{
+                    res.status(500).send(table);
+                }
+            });
+        }
+        else{
+            res.status(403).send(result.error);
+        }
+    });
+});
+
+
 app.put('/api/v1/tables/:id', function(req,res){
     var table = {
         mj: req.body.mj,
@@ -288,28 +321,6 @@ app.put('/api/v1/tables/:id', function(req,res){
         }
         else{
             res.status(403).send(result.error);
-        }
-    });
-});
-
-app.get('/api/v1/tables/:id/players', function(req, res){
-    Tables.findTableById(connection, req.params.id, function(table){
-        if(!table.error){
-            if(table.length > 0){
-                Tables.findPlayersForTable(connection, req.params.id, function(players){
-                    if(!players.error){
-                        res.status(200).send(players);
-                    }
-                    else{
-                        res.status(500).send(players);
-                    }
-                });
-            }
-            else
-                res.status(404).send(table);
-        }
-        else{
-            res.status(500).send(table);
         }
     });
 });
@@ -479,19 +490,84 @@ app.get('/api/v1/status/:id', function(req, res){
 
 /**** GAMES ****/
 app.get('/api/v1/games', function(req, res){
-
+    Games.getAllGames(connection, req, function(games){
+        if(!games.error){
+            res.status(200).send(games);
+        }
+        else{
+            res.status(500).send(games);
+        }
+    });
 });
 
 app.get('/api/v1/games/:id', function(req, res){
-
+    Games.findGameById(connection, req.params.id, function(games){
+        if(!games.error){
+            if(games.length > 0){
+                res.status(200).send(games);
+            }
+            else{
+                res.status(404).send(games);
+            }
+        }
+        else{
+            res.status(500).send(games);
+        }
+    });
 });
 
 app.put('/api/v1/games/:id', function(req, res){
-
+    var game = {
+        nom: req.body.nom,
+        description: req.body.description
+    };
+    checkToken(req, function(result){
+        if(!result.error){
+            Games.findGameById(connection, req.params.id, function(gameFound){
+                if(!gameFound.error){
+                    if(gameFound.length > 0){
+                        Games.updateGame(connection, game, req.params.id, function(updatedGame){
+                            if(!updatedGame.error){
+                                res.sendStatus(200);
+                            }
+                            else{
+                                res.status(500).send(updatedGame);
+                            }
+                        });
+                    }
+                    else{
+                        res.status(404).send('No game by this id');
+                    }
+                }
+                else{
+                    res.status(500).send(gameFound);
+                }
+            });
+        }
+        else{
+            res.status(403).send(result.error);
+        }
+    });
 });
 
 app.post('/api/v1/games', function(req, res){
-
+    var game = {
+        nom: req.body.nom,
+        description: req.body.description
+    };
+    checkToken(req, function(result){
+        if(!result.error){
+            Games.insertGame(connection, game, function(id){
+                if(!id.error)
+                    res.status(201).send({id: id});
+                else
+                    res.status(500).send(id);
+            })
+        }
+        else{
+            res.status(403).send(result.error);
+        }
+    });
 });
 
 var checkToken = function(req, callback){

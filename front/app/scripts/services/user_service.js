@@ -32,6 +32,7 @@ angular.module('mjTables').
                 .post(user)
                 .then(function(data){
                     ConnexionService.setToken(data.token);
+                    ConnexionService.setCurrentUserId(data.id);
                     return true;
                 });
         }

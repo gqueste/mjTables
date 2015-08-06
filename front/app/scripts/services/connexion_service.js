@@ -3,12 +3,15 @@ angular.module('mjTables').
     factory('ConnexionService', ['$cookies', function($cookies){
         var token = undefined;
         var cookiesName = 'mjTablesUserToken';
+        var user_id = undefined;
 
         return{
             estConnecte : estConnecte,
             getToken : getToken,
             setToken : setToken,
-            logOut : logOut
+            logOut : logOut,
+            setCurrentUserId : setCurrentUserId,
+            getCurrentUserId : getCurrentUserId
         };
 
         function estConnecte(){
@@ -32,5 +35,13 @@ angular.module('mjTables').
         function logOut(){
             token = undefined;
             $cookies.remove(cookiesName);
+        }
+
+        function setCurrentUserId(id){
+            user_id = id;
+        }
+
+        function getCurrentUserId(){
+            return user_id;
         }
     }]);
