@@ -6,14 +6,25 @@ var connection = database.connection();
 var morgan     = require('morgan');
 var jwt    	   = require('jsonwebtoken');
 var SHA256 	   = require("crypto-js/sha256");
+var nodemailer = require('nodemailer');
 var createUserCode = "secretCodeForUserCreation";
 var secret = 'mjTablesVerySecretChuttt';
+
+var ConfMail   = require("./back/mjConf");
 
 var Users 	   = require("./back/users");
 var Tables     = require('./back/tables');
 var Frequences = require('./back/frequences');
 var Games      = require('./back/games');
 var Status     = require('./back/status');
+
+var transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+        user: ConfMail.getAdresse(),
+        pass: ConfMail.getPassword()
+    }
+});
 
 
 app.set('superSecret', secret);
@@ -571,6 +582,26 @@ app.post('/api/v1/games', function(req, res){
         }
         else{
             res.status(403).send(result.error);
+        }
+    });
+});
+
+app.get('/api/v1/mail', function(req, res){
+    // setup e-mail data with unicode symbols
+    var mailOptions = {
+        from: 'Diwan <mjtables.conjurestemporel@gmail.com>', // sender address
+        to: 'diwan53@gmail.com', // list of receivers
+        subject: 'Helloé', // Subject line
+        text: 'Hello world éèç' // plaintext body
+    };
+
+    // send mail with defined transport object
+    transporter.sendMail(mailOptions, function(error, info){
+        if(error){
+            console.log(error);
+        }else{
+            console.log('Message sent: ' + info.response);
+            res.sendStatus(200);
         }
     });
 });
