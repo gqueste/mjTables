@@ -1,40 +1,9 @@
 div.container
     h1 Tables
     div
-        h3 Filtres
-    div
         h2 Tables masterisees
-        div.panel.panel-default
-            div.panel-heading
-                div.row
-                    div.col-md-10
-                        a(ui-sref='#') Shadowrun
-                        span  par
-                        a(ui-sref='#')  Gaby
-                    div.col-md-2.text-right
-                        a(ui-sref='#') Changer statut
-                        span  Status
-            div.panel-body
-                div
-                    p Ici le resume de la campagne
-                    p Semaine paire
-                    p Nombre de joueurs / Disponibles
-                div
-                    button.btn.btn-primary Joindre la table
-            table.table
-                thead
-                    tr
-                        th Joueur
-                        th Quitter / Retirer
-                tbody
-                    tr
-                        td
-                            a(ui-sref='#') Steph
-                        td
-                            a.fa.fa-times-circle.fa-2x(ui-sref='#')
-            div
-                button.btn.btn-primary Envoyer message a la table
-                button.btn.btn-danger Supprimer table
+        div(ng-repeat='tableForMJ in tablesForMJ')
+            mjtables-table(tableid='tableForMJ.id')
     div
         h2 Tables participees
     div

@@ -18,8 +18,9 @@ angular.module('mjTables').
         };
 
         function getTable(id){
-            return service
-                .one(id)
+            return Restangular
+                .one('tables',id)
+                .get()
                 .then(function(data){
                     return data;
                 })

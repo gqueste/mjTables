@@ -62,7 +62,7 @@ module.exports = {
         });
     },
     findPlayersForTable : function(connection, id, callback) {
-        connection.query('select users.id as user_id from users_tables where users_tables.table_id = ?', [id], function(err, rows) {
+        connection.query('select user_id from users_tables where users_tables.table_id = ?', [id], function(err, rows) {
             if(!err){
                 callback(rows);
             }

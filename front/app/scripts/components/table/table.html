@@ -16,8 +16,14 @@
             <p>{{table.frequence_libelle}}</p>
             <p>{{table.nbJoueurs}} / {{table.nbJoueursTotal}}</p>
         </div>
-        <div ng-if="!isAlreadyPlayer()">
+        <div ng-if="!isAlreadyPlayer() && !isAdmin()">
             <button class="btn btn-primary">Joindre la table</button>
+        </div>
+        <div class="alert alert-danger" role="alert" ng-if="messageErreur">
+            {{messageErreur}}
+        </div>
+        <div class="alert alert-success" role="alert" ng-if="messageSuccess">
+            {{messageSuccess}}
         </div>
     </div>
     <table class="table">
@@ -30,7 +36,7 @@
         <tbody>
         <tr ng-repeat="player in players">
             <td><a ui-sref="#">{{player.username}}</a></td>
-            <td ng-if="isAdmin() || ConnexionService.getCurrentUserId() === player.id"><a ui-sref="#" class="fa fa-times-circle fa-2x"></a></td>
+            <td ng-if="isAdmin() || isAlreadyPlayer()"><a ui-sref="#" class="fa fa-times-circle fa-2x" ng-if="isAdmin() || ConnexionService.getCurrentUserId() == player.id"></a></td>
         </tr>
         </tbody>
     </table>

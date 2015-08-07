@@ -3,6 +3,7 @@ angular.module('mjTables').
     factory('ConnexionService', ['$cookies', function($cookies){
         var token = undefined;
         var cookiesName = 'mjTablesUserToken';
+        var cookiesNameID = 'mjTablesUserId';
         var user_id = undefined;
 
         return{
@@ -39,9 +40,13 @@ angular.module('mjTables').
 
         function setCurrentUserId(id){
             user_id = id;
+            $cookies.put(cookiesNameID, id);
         }
 
         function getCurrentUserId(){
+            if(!user_id){
+                user_id = $cookies.get(cookiesNameID);
+            }
             return user_id;
         }
     }]);

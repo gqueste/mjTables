@@ -4,15 +4,17 @@ angular.module('mjTables').
 
         $scope.table = {};
         $scope.players = [];
+        $scope.messageErreur = '';
+        $scope.messageSuccess = '';
         $scope.ConnexionService = ConnexionService;
 
         init();
 
         function init(){
-            TableAPI.getTable($scope.table_id)
+            TableAPI.getTable($scope.tableid)
                 .then(function(table){
                     $scope.table = table;
-                    TableAPI.getPlayersForTable($scope.table_id)
+                    TableAPI.getPlayersForTable($scope.tableid)
                         .then(function(players_ids){
                             for(var i = 0; i < players_ids.length; i++){
                                 UserAPI.getUser(players_ids[i].user_id)
@@ -34,13 +36,13 @@ angular.module('mjTables').
         }
 
         $scope.isAdmin = function(){
-            return $scope.table.mj_id === ConnexionService.getCurrentUserId();
+            return $scope.table.mj_id == ConnexionService.getCurrentUserId();
         };
 
         $scope.isAlreadyPlayer = function(){
             var ret = false;
-            for(var i = 0; i < players.length; i++){
-                if(players[i].id === ConnexionService.getCurrentUserId()){
+            for(var i = 0; i < $scope.players.length; i++){
+                if($scope.players[i].id == ConnexionService.getCurrentUserId()){
                     ret = true;
                     break;
                 }

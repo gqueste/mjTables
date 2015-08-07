@@ -72,8 +72,9 @@ angular.module('mjTables').
         }
 
         function getUser(id){
-            return service
-                .one(id)
+            return Restangular
+                .one('users',id)
+                .get()
                 .then(function(data){
                     return data;
                 })

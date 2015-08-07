@@ -114,7 +114,7 @@ app.get("/api/v1/users/:id",function(req,res){
     Users.findUserById(connection, req.params.id, function(user){
         if(!user.error){
             if(user.length > 0)
-                res.status(200).send(user);
+                res.status(200).send(user[0]);
             else
                 res.status(404).send(user);
         }
@@ -246,7 +246,7 @@ app.get('/api/v1/tables/:id', function(req,res){
     Tables.findTableById(connection, req.params.id, function(table){
         if(!table.error){
             if(table.length > 0)
-                res.status(200).send(table);
+                res.status(200).send(table[0]);
             else
                 res.status(404).send(table);
         }

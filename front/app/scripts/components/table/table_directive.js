@@ -6,7 +6,7 @@ angular.module('mjTables').
             templateUrl: 'scripts/components/table/table.html',
             controller: 'TableCtrl',
             scope: {
-                table_id: '='
+                tableid: '='
             }
         };
     });
