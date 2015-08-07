@@ -205,7 +205,12 @@ app.get('/api/v1/tables', function(req, res){
         Tables.findTablesForMJ(connection, req.query.mj, sendTables);
     }
     else if(req.query.player){
-        Tables.findTablesForPlayer(connection, req.query.player, sendTables);
+        if(req.query.others){
+            Tables.findOtherTables(connection, req.query.player, sendTables);
+        }
+        else{
+            Tables.findTablesForPlayer(connection, req.query.player, sendTables);
+        }
     }
     else if(req.query.game){
         Tables.findTablesForGame(connection, req.query.game, sendTables);

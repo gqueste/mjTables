@@ -85,7 +85,7 @@ module.exports = {
         })
     },
     findTablesForPlayer : function(connection, id, callback) {
-        connection.query('select table_id from users_tables where users_tables.user_id = ?', [id], function(err, rows) {
+        connection.query('select table_id as id from users_tables where users_tables.user_id = ?', [id], function(err, rows) {
             if(!err){
                 callback(rows);
             }
@@ -101,6 +101,22 @@ module.exports = {
                 callback(rows);
             }
             else{
+                err.error = true;
+                callback(err);
+            }
+        })
+    },
+    findOtherTables : function(connection, id, callback) {
+        var req = 'select tables.id from tables ';
+        req += 'left join users_tables on users_tables.table_id = tables.id ';
+        req += 'left join users on users.id = tables.mj ';
+        req += 'where tables.mj <> ? ';
+        req += 'and (users_tables.user_id <> ? or users_tables.user_id is null)';
+        connection.query(req, [id, id], function(err, rows) {
+            if(!err) {
+                callback(rows);
+            }
+            else {
                 err.error = true;
                 callback(err);
             }

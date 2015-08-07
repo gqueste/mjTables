@@ -1,11 +1,11 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="row">
-            <div class="col-md-10">
+            <div class="col-sm-8">
                 <a ui-sref="#">{{table.game_nom}}</a>
                 <span> par</span>
                 <a ui-sref="#"> {{table.mj_username}}</a></div>
-            <div class="col-md-2 text-right">
+            <div class="col-sm-4 text-right">
                 <a ui-sref="#" ng-if="isAdmin()">Changer statut</a>
                 <span> {{table.status_libelle}}</span></div>
         </div>
@@ -26,7 +26,7 @@
             {{messageSuccess}}
         </div>
     </div>
-    <table class="table">
+    <table class="table" ng-if="players.length > 0">
         <thead>
         <tr>
             <th>Joueur</th>
@@ -40,6 +40,10 @@
         </tr>
         </tbody>
     </table>
+    <div class="text-center" ng-if="players.length == 0 && !isAdmin() && !isAlreadyPlayer()">
+        Pas encore de joueur.
+        <a href="#">Rejoignez la table.</a>
+    </div>
     <div ng-if="isAdmin() || isAlreadyPlayer()">
         <button class="btn btn-primary">Envoyer message a la table</button>
         <button class="btn btn-danger" ng-if="isAdmin()">Supprimer table</button>

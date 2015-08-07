@@ -1,11 +1,15 @@
 div.container
     h1 Tables
-    div
+    button.btn.btn-primary Proposer une nouvelle table
+    div(ng-if='tablesForMJ.length > 0')
         h2 Tables masterisees
         div(ng-repeat='tableForMJ in tablesForMJ')
             mjtables-table(tableid='tableForMJ.id')
-    div
+    div(ng-if='tablesForPlayer.length > 0')
         h2 Tables participees
-    div
+        div(ng-repeat='tableForPlayer in tablesForPlayer')
+            mjtables-table(tableid='tableForPlayer.id')
+    div(ng-if='otherTables.length > 0')
         h2 Autres tables
-
+        div(ng-repeat='otherTable in otherTables')
+            mjtables-table(tableid='otherTable.id')

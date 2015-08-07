@@ -6,9 +6,10 @@ angular.module('mjTables').
 
         return {
             getTable: getTable,
-            findTableForMJ: findTableForMJ,
-            findTableForPlayer: findTableForPlayer,
-            findTableForGame: findTableForGame,
+            findTablesForMJ: findTablesForMJ,
+            findTablesForPlayer: findTablesForPlayer,
+            findTablesForGame: findTablesForGame,
+            findOtherTablesForPlayer: findOtherTablesForPlayer,
             updateTable : updateTable,
             deleteTable : deleteTable,
             createTable : createTable,
@@ -29,7 +30,7 @@ angular.module('mjTables').
                 });
         }
 
-        function findTableForMJ(id){
+        function findTablesForMJ(id){
             return service
                 .getList({mj : id})
                 .then(function(data){
@@ -40,7 +41,7 @@ angular.module('mjTables').
                 });
         }
 
-        function findTableForPlayer(id){
+        function findTablesForPlayer(id){
             return service
                 .getList({player : id})
                 .then(function(data){
@@ -51,9 +52,20 @@ angular.module('mjTables').
                 });
         }
 
-        function findTableForGame(id){
+        function findTablesForGame(id){
             return service
                 .getList({game : id})
+                .then(function(data){
+                    return data;
+                })
+                .catch(function(error){
+                    throw error;
+                });
+        }
+
+        function findOtherTablesForPlayer(id){
+            return service
+                .getList({player : id, others:true})
                 .then(function(data){
                     return data;
                 })
