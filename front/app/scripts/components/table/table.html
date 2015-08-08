@@ -2,11 +2,12 @@
     <div class="panel-heading">
         <div class="row">
             <div class="col-sm-8">
-                <a ui-sref="#">{{table.game_nom}}</a>
+                <strong>{{table.table_nom}} </strong>
+                (<a ui-sref="#">{{table.game_nom}}</a>)
                 <span> par</span>
                 <a ui-sref="#"> {{table.mj_username}}</a></div>
             <div class="col-sm-4 text-right">
-                <a ui-sref="#" ng-if="isAdmin()">Changer statut</a>
+                <a href="#" ng-if="isAdmin()" ng-click="openModalEdit()">Editer</a>
                 <span> {{table.status_libelle}}</span></div>
         </div>
     </div>

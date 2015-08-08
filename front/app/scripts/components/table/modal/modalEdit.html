@@ -1,0 +1,104 @@
+
+<div class="modal-header">
+    <h3 class="modal-title">Editer la table</h3>
+</div>
+
+<div class="modal-body">
+    <form class="form-horizontal">
+        <div class="form-group" ng-class="{'has-error' : nomError}">
+            <label class="col-sm-3 control-label">
+                Nom de la campagne
+            </label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" ng-model="table.table_nom" placeholder="Nom">
+            </div>
+            <i class="col-sm-1 fa fa-times-circle fa-2x error" ng-if="nomError" tooltip="{{nomError}}"></i>
+        </div>
+        <div class="form-group" ng-class="{'has-error' : gameError}">
+            <label class="col-sm-3 control-label">
+                Jeu
+            </label>
+            <div class="col-sm-8">
+                <select class="form-control" ng-model="table.game_id" ng-options="game.id as game.nom for game in games"></select>
+            </div>
+            <i class="col-sm-1 fa fa-times-circle fa-2x error" ng-if="gameError" tooltip="{{gameError}}"></i>
+        </div>
+        <div class="form-group">
+            <a href="#" class="col-sm-offset-3" ng-click="toogleGameAction()" ng-if="!addGameAction">Ajouter un nouveau jeu</a>
+            <a href="#" class="col-sm-offset-3" ng-click="toogleGameAction()" ng-if="addGameAction">Annuler</a>
+            <div class="alert alert-success" role="alert" ng-if="addGameSuccess">{{addGameSuccess}}</div>
+            <div class="panel panel-default" ng-if="addGameAction">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            Nom du nouveau jeu
+                        </label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="text" ng-model="newGame.nom" placeholder="Nom du jeu">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            Description
+                        </label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" ng-model="newGame.description" placeholder="Description du jeu"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-block btn-primary" ng-disabled="!newGame.nom || !newGame.description" ng-click="addGame()">Ajouter ce jeu</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">
+                Maître du Jeu
+            </label>
+            <div class="col-sm-8">
+                <p class="form-control-static">{{table.mj_username}}</p>
+            </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error' : statusError}">
+            <label class="col-sm-3 control-label">
+                Statut
+            </label>
+            <div class="col-sm-8">
+                <select class="form-control" ng-model="table.status_id" ng-options="statut.id as statut.libelle for statut in status"></select>
+            </div>
+            <i class="col-sm-1 fa fa-times-circle fa-2x error" ng-if="statusError" tooltip="{{statusError}}"></i>
+        </div>
+        <div class="form-group" ng-class="{'has-error' : frequenceError}">
+            <label class="col-sm-3 control-label">
+                Fréquence
+            </label>
+            <div class="col-sm-8">
+                <select class="form-control" ng-model="table.frequence_id" ng-options="frequence.id as frequence.libelle for frequence in frequences"></select>
+            </div>
+            <i class="col-sm-1 fa fa-times-circle fa-2x error" ng-if="frequenceError" tooltip="{{frequenceError}}"></i>
+        </div>
+        <div class="form-group" ng-class="{'has-error' : nbJoueursError}">
+            <label class="col-sm-3 control-label">
+                Nombre de Places disponibles
+            </label>
+            <div class="col-sm-8">
+                <input class="form-control" type="number" ng-model="table.nbJoueursTotal">
+            </div>
+            <i class="col-sm-1 fa fa-times-circle fa-2x error" ng-if="nbJoueursError" tooltip="{{nbJoueursError}}"></i>
+        </div>
+        <div class="form-group" ng-class="{'has-error' : descriptionError}">
+            <label class="col-sm-3 control-label">
+                Description
+            </label>
+            <div class="col-sm-8">
+                <textarea class="form-control" ng-model="table.description"></textarea>
+            </div>
+            <i class="col-sm-1 fa fa-times-circle fa-2x error" ng-if="descriptionError" tooltip="{{descriptionError}}"></i>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()">Valider</button>
+    <button class="btn btn-warning" ng-click="cancel()">Annuler</button>
+</div>

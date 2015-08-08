@@ -1,6 +1,7 @@
 module.exports = {
     findTableById : function(connection, id, callback){
         var req = 'select tables.id as table_id, ';
+        req += 'tables.nom as table_nom, ';
         req += 'users.id as mj_id, ';
         req += 'users.username as mj_username, ';
         req += 'games.id as game_id, ';
@@ -109,9 +110,12 @@ module.exports = {
     findOtherTables : function(connection, id, callback) {
         var req = 'select tables.id from tables ';
         req += 'left join users_tables on users_tables.table_id = tables.id ';
-        req += 'left join users on users.id = tables.mj ';
         req += 'where tables.mj <> ? ';
-        req += 'and (users_tables.user_id <> ? or users_tables.user_id is null)';
+        req += 'and tables.id NOT IN ( ';
+        req += '    select tables.id from tables ';
+        req += '    left join users_tables on users_tables.table_id = tables.id ';
+        req += '    where user_id = ? ';
+        req += ');';
         connection.query(req, [id, id], function(err, rows) {
             if(!err) {
                 callback(rows);

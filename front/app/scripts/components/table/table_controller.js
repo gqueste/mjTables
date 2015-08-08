@@ -1,6 +1,6 @@
 angular.module('mjTables').
 
-    controller('TableCtrl', ['$scope', 'TableAPI', 'UserAPI', 'ConnexionService', function($scope, TableAPI, UserAPI, ConnexionService){
+    controller('TableCtrl', ['$scope', 'TableAPI', 'UserAPI', 'ConnexionService', '$modal', function($scope, TableAPI, UserAPI, ConnexionService, $modal){
 
         $scope.table = {};
         $scope.players = [];
@@ -10,7 +10,9 @@ angular.module('mjTables').
 
         init();
 
-        function init(){
+        function init(messageErreur, messageSuccess){
+            $scope.messageErreur = messageErreur;
+            $scope.messageSuccess = messageSuccess;
             TableAPI.getTable($scope.tableid)
                 .then(function(table){
                     $scope.table = table;
@@ -49,5 +51,22 @@ angular.module('mjTables').
             }
             return ret;
         };
+
+        $scope.openModalEdit = function(){
+            var modalInstance = $modal.open({
+                templateUrl: 'scripts/components/table/modal/modalEdit.html',
+                controller: 'modalEditCtrl',
+                size: 'lg',
+                resolve:{
+                    idTable: function () {
+                        return $scope.tableid;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function(){
+
+            })
+        }
 
     }]);

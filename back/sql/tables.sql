@@ -1,5 +1,6 @@
 CREATE TABLE `tables` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nom` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `mj` int(11) NOT NULL,
   `game` int(11) NOT NULL,
   `status` int(11) NOT NULL,

@@ -506,7 +506,7 @@ app.get('/api/v1/status/:id', function(req, res){
 
 /**** GAMES ****/
 app.get('/api/v1/games', function(req, res){
-    Games.getAllGames(connection, req, function(games){
+    Games.getAllGames(connection, function(games){
         if(!games.error){
             res.status(200).send(games);
         }
