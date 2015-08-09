@@ -18,7 +18,7 @@
             <p>{{table.nbJoueurs}} / {{table.nbJoueursTotal}}</p>
         </div>
         <div ng-if="!isAlreadyPlayer() && !isAdmin()">
-            <button class="btn btn-primary">Joindre la table</button>
+            <button class="btn btn-primary" ng-click="rejoindreTable()">Joindre la table</button>
         </div>
         <div class="alert alert-danger" role="alert" ng-if="messageErreur">
             {{messageErreur}}
@@ -35,13 +35,13 @@
         <tbody>
         <tr ng-repeat="player in players">
             <td><a ui-sref="#">{{player.username}}</a></td>
-            <td ng-if="isAdmin() || isAlreadyPlayer()"><a ui-sref="#" class="fa fa-times-circle fa-2x" ng-if="isAdmin() || ConnexionService.getCurrentUserId() == player.id"></a></td>
+            <td ng-if="isAdmin() || isAlreadyPlayer()"><a href="#" class="fa fa-times-circle fa-2x" ng-if="isAdmin() || ConnexionService.getCurrentUserId() == player.id" ng-click="removePlayer(player.id)"></a></td>
         </tr>
         </tbody>
     </table>
     <div class="text-center" ng-if="players.length == 0 && !isAdmin() && !isAlreadyPlayer()">
         Pas encore de joueur.
-        <a href="#">Rejoignez la table.</a>
+        <a href="#" ng-click="rejoindreTable()">Rejoignez la table.</a>
     </div>
     <div ng-if="isAdmin() || isAlreadyPlayer()">
         <button class="btn btn-primary">Envoyer message a la table</button>

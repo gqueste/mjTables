@@ -1,6 +1,6 @@
 angular.module('mjTables').
 
-    controller('TableCtrl', ['$scope', 'TableAPI', 'UserAPI', 'ConnexionService', '$modal', function($scope, TableAPI, UserAPI, ConnexionService, $modal){
+    controller('TableCtrl', ['$scope', '$rootScope', 'TableAPI', 'UserAPI', 'ConnexionService', '$modal', function($scope, $rootScope, TableAPI, UserAPI, ConnexionService, $modal){
 
         $scope.table = {};
         $scope.players = [];
@@ -68,6 +68,22 @@ angular.module('mjTables').
             modalInstance.result.then(function(updatedTable){
                 var message = 'Table <strong>' + updatedTable.nom + '</strong> a été mise à jour';
                 init(null, message);
+            });
+        };
+
+        $scope.removePlayer = function(user_id){
+            TableAPI.removePlayerFromTable($scope.tableid, user_id).then(function(){
+                $rootScope.$broadcast('playerRemoved', {table_id : $scope.tableid, user_id : user_id});
+            }).catch(function(error){
+                console.log(error);
+            });
+        };
+
+        $scope.rejoindreTable = function(){
+            TableAPI.addPlayerToTable($scope.tableid, ConnexionService.getCurrentUserId()).then(function(){
+                $rootScope.$broadcast('playerAdded', {table_id : $scope.tableid, user_id : ConnexionService.getCurrentUserId()});
+            }).catch(function(error){
+                console.log(error);
             });
         }
 

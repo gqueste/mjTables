@@ -128,7 +128,7 @@ angular.module('mjTables').
             return Restangular
                 .one('tables',table_id)
                 .all('players')
-                .post({id: user_id})
+                .post({id: user_id, token: ConnexionService.getToken()})
                 .then(function(data){
                     return data;
                 })
@@ -141,7 +141,8 @@ angular.module('mjTables').
             return Restangular
                 .one('tables',table_id)
                 .one('players',user_id)
-                .remove()
+                .all('remove')
+                .post({token: ConnexionService.getToken()})
                 .then(function(data){
                     return data;
                 })

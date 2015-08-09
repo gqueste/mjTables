@@ -375,7 +375,7 @@ app.post('/api/v1/tables/:id/players', function(req, res){
                             if(!user.error){
                                 if(user.length > 0){
                                     Tables.addPlayerToTable(connection, user_id, table_id, function(err){
-                                        if(!err.error){
+                                        if(!err){
                                             res.sendStatus(200);
                                         }
                                         else{
@@ -405,7 +405,7 @@ app.post('/api/v1/tables/:id/players', function(req, res){
     });
 });
 
-app.delete('/api/v1/tables/:idTable/players/:idUser', function(req, res){
+app.post('/api/v1/tables/:idTable/players/:idUser/remove', function(req, res){
     checkToken(req, function(result){
        if(!result.error){
            Tables.findTableById(connection, req.params.idTable, function(table){
@@ -415,7 +415,7 @@ app.delete('/api/v1/tables/:idTable/players/:idUser', function(req, res){
                            if(!user.error){
                                if(user.length > 0){
                                    Tables.removePlayerFromTable(connection, req.params.idUser, req.params.idTable, function(err){
-                                       if(!err.error){
+                                       if(!err){
                                            res.sendStatus(200);
                                        }
                                        else{

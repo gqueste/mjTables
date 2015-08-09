@@ -1,6 +1,7 @@
 div.container
     h1 Tables
     button.btn.btn-primary Proposer une nouvelle table
+    div.alert.alert-success(role="alert" ng-if="message" ng-bind-html="message")
     div(ng-if='tablesForMJ.length > 0')
         h2 Tables masterisees
         div(ng-repeat='tableForMJ in tablesForMJ')

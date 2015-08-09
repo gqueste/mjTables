@@ -5,10 +5,12 @@ angular.module('mjTables').
         $scope.tablesForMJ = [];
         $scope.tablesForPlayer = [];
         $scope.otherTables = [];
+        $scope.message = '';
 
         init();
 
-        function init(){
+        function init(message){
+            $scope.message = message;
             TableAPI.findTablesForMJ(ConnexionService.getCurrentUserId())
                 .then(function(tables){
                     $scope.tablesForMJ = tables;
@@ -31,4 +33,26 @@ angular.module('mjTables').
                     console.log(error);
                 });
         }
+
+        $scope.$on('playerRemoved', function(event, args){
+            TableAPI.getTable(args.table_id).then(function(table){
+                UserAPI.getUser(args.user_id).then(function(user){
+                    var message = 'Le joueur <strong>' + user.username + '</strong> a bien été retiré de la table <strong>' + table.table_nom + '</strong>.';
+                    init(message);
+                })
+            }).catch(function(error){
+                console.log(error);
+            });
+        });
+
+        $scope.$on('playerAdded', function(event, args){
+            TableAPI.getTable(args.table_id).then(function(table){
+                UserAPI.getUser(args.user_id).then(function(user){
+                    var message = 'Le joueur <strong>' + user.username + '</strong> a bien été ajouté à la table <strong>' + table.table_nom + '</strong>.';
+                    init(message);
+                })
+            }).catch(function(error){
+                console.log(error);
+            });
+        })
     }]);
