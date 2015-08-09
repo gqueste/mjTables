@@ -85,6 +85,25 @@ angular.module('mjTables').
             }).catch(function(error){
                 console.log(error);
             });
-        }
+        };
 
+        $scope.openModalDelete = function() {
+            var modalInstance = $modal.open({
+                templateUrl: 'scripts/components/table/modal/modalDelete.html',
+                controller: 'modalDeleteCtrl',
+                size: 'sm',
+                resolve:{
+                    idTable: function () {
+                        return $scope.tableid;
+                    },
+                    nomTable: function() {
+                        return $scope.table.table_nom;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function(){
+                $rootScope.$broadcast('tableDeleted', {table_nom : $scope.table.table_nom});
+            });
+        };
     }]);

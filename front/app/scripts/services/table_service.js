@@ -87,10 +87,11 @@ angular.module('mjTables').
                 });
         }
 
-        function deleteTable(table){
-            table.token = ConnexionService.getToken();
-            return table
-                .remove()
+        function deleteTable(table_id){
+            return Restangular
+                .one('tables', table_id)
+                .all('delete')
+                .post({token: ConnexionService.getToken()})
                 .then(function(data) {
                     return data;
                 })

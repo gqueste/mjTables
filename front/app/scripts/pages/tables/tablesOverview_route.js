@@ -3,7 +3,7 @@ angular.module('mjTables').
     config(function($stateProvider){
         $stateProvider
             .state('tablesOverview', {
-                url: "/main",
+                url: "/tables",
                 templateUrl: 'partials/tablesOverview.jade',
                 controller: 'TablesOverviewCtrl',
                 onEnter: ['$state', '$timeout', 'ConnexionService', function($state, $timeout, ConnexionService){

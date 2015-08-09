@@ -3,11 +3,11 @@ div.container
     button.btn.btn-primary Proposer une nouvelle table
     div.alert.alert-success(role="alert" ng-if="message" ng-bind-html="message")
     div(ng-if='tablesForMJ.length > 0')
-        h2 Tables masterisees
+        h2 Tables que vous masterisez
         div(ng-repeat='tableForMJ in tablesForMJ')
             mjtables-table(tableid='tableForMJ.id')
     div(ng-if='tablesForPlayer.length > 0')
-        h2 Tables participees
+        h2 Tables auxquelles vous participez
         div(ng-repeat='tableForPlayer in tablesForPlayer')
             mjtables-table(tableid='tableForPlayer.id')
     div(ng-if='otherTables.length > 0')

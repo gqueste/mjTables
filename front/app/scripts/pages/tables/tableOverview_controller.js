@@ -1,37 +1,22 @@
 angular.module('mjTables').
 
-    controller('TablesOverviewCtrl', ['$scope', 'UserAPI', 'TableAPI', 'ConnexionService', function($scope, UserAPI, TableAPI, ConnexionService){
+    controller('TableOverviewCtrl', ['$scope', '$rootScope', 'UserAPI', 'TableAPI', 'ConnexionService', '$state', '$stateParams', function($scope, $rootScope, UserAPI, TableAPI, ConnexionService, $state, $stateParams){
 
-        $scope.tablesForMJ = [];
-        $scope.tablesForPlayer = [];
-        $scope.otherTables = [];
+        $scope.table = {};
         $scope.message = '';
+        $scope.loaded = false;
 
         init();
 
         function init(message){
+            $scope.loaded = false;
             $scope.message = message;
-            TableAPI.findTablesForMJ(ConnexionService.getCurrentUserId())
-                .then(function(tables){
-                    $scope.tablesForMJ = tables;
-                })
-                .catch(function(error){
-                    console.log(error);
-                });
-            TableAPI.findTablesForPlayer(ConnexionService.getCurrentUserId())
-                .then(function(tables){
-                    $scope.tablesForPlayer = tables;
-                })
-                .catch(function(error){
-                    console.log(error);
-                });
-            TableAPI.findOtherTablesForPlayer(ConnexionService.getCurrentUserId())
-                .then(function(tables){
-                    $scope.otherTables = tables;
-                })
-                .catch(function(error){
-                    console.log(error);
-                });
+            TableAPI.getTable($stateParams.id).then(function(table){
+                $scope.table = table;
+                $scope.loaded = true;
+            }).catch(function(error){
+                console.log(error);
+            })
         }
 
         $scope.$on('playerRemoved', function(event, args){
@@ -57,7 +42,6 @@ angular.module('mjTables').
         });
 
         $scope.$on('tableDeleted', function(event, args){
-            var message = 'La table <strong>' + args.table_nom + '</strong> a bien été supprimée.';
-            init(message);
+            $state.go('tablesOverview');
         });
     }]);

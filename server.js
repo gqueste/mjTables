@@ -235,6 +235,7 @@ app.get('/api/v1/tables', function(req, res){
 app.post('/api/v1/tables', function(req, res){
     var table = {
         mj: req.body.mj,
+        nom : req.body.nom,
         game: req.body.game,
         status: req.body.status,
         description: req.body.description,
@@ -272,14 +273,14 @@ app.get('/api/v1/tables/:id', function(req,res){
     });
 });
 
-app.delete('/api/v1/tables/:id', function(req,res){
+app.post('/api/v1/tables/:id/delete', function(req,res){
     checkToken(req, function(result){
         if(!result.error){
             Tables.findTableById(connection, req.params.id, function(table){
                 if(!table.error){
                     if(table.length > 0){
                         Tables.deleteTable(connection, req.params.id, function(err){
-                            if(!err.error){
+                            if(!err){
                                 res.sendStatus(200);
                             }
                             else{
@@ -305,6 +306,7 @@ app.delete('/api/v1/tables/:id', function(req,res){
 app.put('/api/v1/tables/:id', function(req,res){
     var table = {
         mj: req.body.mj,
+        nom : req.body.nom,
         game: req.body.game,
         status: req.body.status,
         description: req.body.description,
@@ -520,7 +522,7 @@ app.get('/api/v1/games/:id', function(req, res){
     Games.findGameById(connection, req.params.id, function(games){
         if(!games.error){
             if(games.length > 0){
-                res.status(200).send(games);
+                res.status(200).send(games[0]);
             }
             else{
                 res.status(404).send(games);

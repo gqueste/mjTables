@@ -3,11 +3,11 @@
         <div class="row">
             <div class="col-sm-8">
                 <strong>{{table.table_nom}} </strong>
-                (<a ui-sref="#">{{table.game_nom}}</a>)
+                (<a ui-sref="game({id: table.game_id})">{{table.game_nom}}</a>)
                 <span> par</span>
                 <a ui-sref="#"> {{table.mj_username}}</a></div>
             <div class="col-sm-4 text-right">
-                <a href="#" ng-if="isAdmin()" ng-click="openModalEdit()">Editer</a>
+                <a href="" ng-if="isAdmin()" ng-click="openModalEdit()">Editer</a>
                 <span> {{table.status_libelle}}</span></div>
         </div>
     </div>
@@ -44,7 +44,7 @@
         <a href="#" ng-click="rejoindreTable()">Rejoignez la table.</a>
     </div>
     <div ng-if="isAdmin() || isAlreadyPlayer()">
-        <button class="btn btn-primary">Envoyer message a la table</button>
-        <button class="btn btn-danger" ng-if="isAdmin()">Supprimer table</button>
+        <button class="btn btn-primary">Envoyer un message à la table</button>
+        <button class="btn btn-danger" ng-if="isAdmin()" ng-click="openModalDelete()">Supprimer table</button>
     </div>
 </div>

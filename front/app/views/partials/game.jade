@@ -1,0 +1,31 @@
+div
+    h1 {{game.nom}}
+div
+    p {{game.description}}
+div
+    a(href='#') Editer la fiche du jeu
+div
+    h2 Tables jouant ce jeu
+    div(ng-if="!tables.length > 0")
+        p Il n'y a pour l'instant aucune table pour ce jeu. Pourquoi ne pas
+        a(href='#') proposer la vôtre ?
+    div(ng-if="tables.length > 0")
+        table.table
+            thead
+                tr
+                    th Nom
+                    th MJ
+                    th Fréquence
+                    th Nb Joueurs
+                    th Capacité
+                    th Statut
+            tbody
+                tr(ng-repeat="table in tables")
+                    td
+                        a(ui-sref="table({id: table.table_id})") {{table.table_nom}}
+                    td
+                        a(ui-sref="#") {{table.mj_username}}
+                    td {{table.frequence_libelle}}
+                    td {{table.nbJoueurs}}
+                    td {{table.nbJoueursTotal}}
+                    td {{table.status_libelle}}

@@ -6,12 +6,25 @@ angular.module('mjTables').
 
         return {
             getAll: getAll,
+            getGame: getGame,
             createGame : createGame
         };
 
         function getAll(){
             return service
                 .getList()
+                .then(function(data){
+                    return data;
+                })
+                .catch(function(error){
+                    throw error;
+                });
+        }
+
+        function getGame(id){
+            return Restangular
+                .one('games', id)
+                .get()
                 .then(function(data){
                     return data;
                 })
