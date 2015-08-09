@@ -3,5 +3,6 @@ angular.module('mjTables', [
     'restangular',
     'ui.router',
     'ui.bootstrap',
-    'ngCookies'
+    'ngCookies',
+    'ngSanitize'
 ]);

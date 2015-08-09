@@ -18,6 +18,7 @@ angular.module('mjTables').
                     $scope.table = table;
                     TableAPI.getPlayersForTable($scope.tableid)
                         .then(function(players_ids){
+                            $scope.players = [];
                             for(var i = 0; i < players_ids.length; i++){
                                 UserAPI.getUser(players_ids[i].user_id)
                                     .then(function(user){
@@ -64,9 +65,10 @@ angular.module('mjTables').
                 }
             });
 
-            modalInstance.result.then(function(){
-
-            })
+            modalInstance.result.then(function(updatedTable){
+                var message = 'Table <strong>' + updatedTable.nom + '</strong> a été mise à jour';
+                init(null, message);
+            });
         }
 
     }]);

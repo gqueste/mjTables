@@ -75,9 +75,10 @@ angular.module('mjTables').
         }
 
         function updateTable(table) {
-            table.code = ConnexionService.getToken();
-            return table
-                .put()
+            table.token = ConnexionService.getToken();
+            return Restangular
+                .one('tables', table.id)
+                .customPUT(table)
                 .then(function(data) {
                     return data;
                 })
@@ -87,7 +88,7 @@ angular.module('mjTables').
         }
 
         function deleteTable(table){
-            table.code = ConnexionService.getToken();
+            table.token = ConnexionService.getToken();
             return table
                 .remove()
                 .then(function(data) {
@@ -99,7 +100,7 @@ angular.module('mjTables').
         }
 
         function createTable(table){
-            table.code = ConnexionService.getToken();
+            table.token = ConnexionService.getToken();
             return service
                 .post(table)
                 .then(function(data){

@@ -23,9 +23,7 @@
         <div class="alert alert-danger" role="alert" ng-if="messageErreur">
             {{messageErreur}}
         </div>
-        <div class="alert alert-success" role="alert" ng-if="messageSuccess">
-            {{messageSuccess}}
-        </div>
+        <div class="alert alert-success" role="alert" ng-if="messageSuccess" ng-bind-html="messageSuccess"></div>
     </div>
     <table class="table" ng-if="players.length > 0">
         <thead>
