@@ -1,12 +1,16 @@
 angular.module('mjTables').
 
-    controller('editTableModalCtrl', ['$scope', '$modalInstance', 'TableAPI', 'GameAPI', 'StatusAPI', 'FrequenceAPI', 'idTable', function($scope, $modalInstance, TableAPI, GameAPI, StatusAPI, FrequenceAPI, idTable){
+    controller('editTableModalCtrl', ['$scope', '$modalInstance', 'TableAPI', 'GameAPI', 'StatusAPI', 'FrequenceAPI', 'idTable', 'ConnexionService', 'UserAPI', function($scope, $modalInstance, TableAPI, GameAPI, StatusAPI, FrequenceAPI, idTable, ConnexionService, UserAPI){
         $scope.table = {};
         $scope.games = [];
         $scope.status = [];
         $scope.frequences = [];
         $scope.newGame = {};
         $scope.addGameAction = false;
+
+        $scope.isCreation = function(){
+            return idTable == -1;
+        };
 
         init();
 
@@ -15,11 +19,22 @@ angular.module('mjTables').
             loadGames();
         }
 
-        TableAPI.getTable(idTable).then(function(table){
-            $scope.table = table;
-        }).catch(function(error){
-            console.log(error);
-        });
+        if(!$scope.isCreation()){
+            TableAPI.getTable(idTable).then(function(table){
+                $scope.table = table;
+            }).catch(function(error){
+                console.log(error);
+            });
+        }
+        else{
+            $scope.table.mj_id = ConnexionService.getCurrentUserId();
+            UserAPI.getUser($scope.table.mj_id).then(function(user){
+                $scope.table.mj_username = user.username;
+            }).catch(function(error){
+                console.log(error);
+            });
+        }
+
 
         StatusAPI.getAll().then(function(status){
             $scope.status = status;
@@ -53,7 +68,6 @@ angular.module('mjTables').
 
         $scope.ok = function () {
             var updatedTable = {
-                id: idTable,
                 nom: $scope.table.table_nom,
                 mj: $scope.table.mj_id,
                 game: $scope.table.game_id,
@@ -63,11 +77,22 @@ angular.module('mjTables').
                 nbJoueurs: $scope.table.nbJoueurs,
                 nbJoueursTotal: $scope.table.nbJoueursTotal
             };
-            TableAPI.updateTable(updatedTable).then(function(){
-                $modalInstance.close(updatedTable);
-            }).catch(function(error){
-                console.log(error);
-            })
+            if($scope.isCreation()){
+                updatedTable.nbJoueurs = 0;
+                TableAPI.createTable(updatedTable).then(function(){
+                    $modalInstance.close(updatedTable);
+                }).catch(function(error){
+                    console.log(error);
+                });
+            }
+            else {
+                updatedTable.id = idTable;
+                TableAPI.updateTable(updatedTable).then(function(){
+                    $modalInstance.close(updatedTable);
+                }).catch(function(error){
+                    console.log(error);
+                });
+            }
         };
 
         function loadGames(){

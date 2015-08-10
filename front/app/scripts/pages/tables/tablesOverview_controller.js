@@ -1,6 +1,6 @@
 angular.module('mjTables').
 
-    controller('TablesOverviewCtrl', ['$scope', 'UserAPI', 'TableAPI', 'ConnexionService', function($scope, UserAPI, TableAPI, ConnexionService){
+    controller('TablesOverviewCtrl', ['$scope', 'UserAPI', 'TableAPI', 'ConnexionService', '$modal', function($scope, UserAPI, TableAPI, ConnexionService, $modal){
 
         $scope.tablesForMJ = [];
         $scope.tablesForPlayer = [];
@@ -60,4 +60,22 @@ angular.module('mjTables').
             var message = 'La table <strong>' + args.table_nom + '</strong> a bien été supprimée.';
             init(message);
         });
+
+        $scope.openCreateTableModal = function(){
+            var modalInstance = $modal.open({
+                templateUrl: 'scripts/components/table/modal/editTableModal.html',
+                controller: 'editTableModalCtrl',
+                size: 'lg',
+                resolve:{
+                    idTable: function () {
+                        return -1;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function(updatedTable){
+                var message = 'Table <strong>' + updatedTable.nom + '</strong> a été créée';
+                init(message);
+            });
+        }
     }]);

@@ -1,6 +1,6 @@
 div.container
     h1 Tables
-    button.btn.btn-primary Proposer une nouvelle table
+    button.btn.btn-primary(ng-click='openCreateTableModal()') Proposer une nouvelle table
     div.alert.alert-success(role="alert" ng-if="message" ng-bind-html="message")
     div(ng-if='tablesForMJ.length > 0')
         h2 Tables que vous masterisez

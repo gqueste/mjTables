@@ -41,7 +41,7 @@ module.exports = {
         });
     },
     insertTable : function(connection, table, callback){
-        connection.query("INSERT INTO tables SET ?", [user], function(err, result){
+        connection.query("INSERT INTO tables SET ?", [table], function(err, result){
             if(!err)
                 callback(result.insertId);
             else{
