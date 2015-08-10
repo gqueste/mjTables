@@ -1,0 +1,28 @@
+div.container
+    h1 Mon compte
+    div.alert.alert-success(role="alert" ng-if="messageSuccess" ng-bind-html="messageSuccess")
+    form.form-horizontal
+        div.form-group(ng-class="{'has-error' : usernameError, 'has-success' : !usernameError && username}")
+            label.col-sm-3.control-label Pseudo
+            div.col-sm-8
+                input.form-control(type="text", ng-model="username", placeholder="Pseudo", ng-change="controlUsername()")
+            i.col-sm-1.fa.fa-times-circle.fa-2x.error(ng-if='usernameError', tooltip="{{usernameError}}")
+            i.col-sm-1.fa.fa-check-circle.fa-2x.valid(ng-if='!usernameError && username')
+        div.form-group(ng-class="{'has-error' : mailError, 'has-success' : !mailError && mail}")
+            label.col-sm-3.control-label Mail
+            div.col-sm-8
+                input.form-control(type="email", ng-model="mail", placeholder="Adresse mail", ng-change="controlMail()")
+            i.col-sm-1.fa.fa-times-circle.fa-2x.error(ng-if='mailError', tooltip="{{mailError}}")
+            i.col-sm-1.fa.fa-check-circle.fa-2x.valid(ng-if='!mailError && mail')
+        div.form-group(ng-class="{'has-error' : passwordError, 'has-success' : !passwordError && password}")
+            label.col-sm-3.control-label Changer le Mot de passe
+            div.col-sm-8
+                input.form-control(type="password", ng-model="password", placeholder="Mot de passe", ng-change="controlPassword()")
+            i.col-sm-1.fa.fa-times-circle.fa-2x.error(ng-if='passwordError', tooltip="{{passwordError}}")
+            i.col-sm-1.fa.fa-check-circle.fa-2x.valid(ng-if='!passwordError && password')
+        div.form-group(ng-class="{'has-error' : passwordVerifError, 'has-success' : !passwordVerifError && passwordVerif}")
+            label.col-sm-3.control-label Ancien mot de passe
+            div.col-sm-8
+                input.form-control(type="password", ng-model="passwordVerif", placeholder="Mot de passe")
+            i.col-sm-1.fa.fa-times-circle.fa-2x.error(ng-if='passwordVerifError', tooltip="{{passwordVerifError}}")
+        button.btn.btn-primary(type="submit" ng-click="saveChanges()" ng-disabled="saveChangesDisabled()") Enregistrer

@@ -12,7 +12,8 @@ angular.module('mjTables').
             findByUsername: findByUsername,
             findByMail: findByMail,
             createUser : createUser,
-            getUser : getUser
+            getUser : getUser,
+            updateUser : updateUser
         };
 
         function getAll(){
@@ -75,6 +76,19 @@ angular.module('mjTables').
             return Restangular
                 .one('users',id)
                 .get()
+                .then(function(data){
+                    return data;
+                })
+                .catch(function(error){
+                    throw error;
+                });
+        }
+
+        function updateUser(id, user){
+            user.token = ConnexionService.getToken();
+            return Restangular
+                .one('users', id)
+                .customPUT(user)
                 .then(function(data){
                     return data;
                 })

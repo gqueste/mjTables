@@ -138,23 +138,39 @@ app.get("/api/v1/users/:id",function(req,res){
 app.put("/api/v1/users/:id",function(req, res){
     var user = {
         username : req.body.username,
-        password : SHA256(req.body.password),
         email    : req.body.email
     };
+    var newPassword = req.body.newPassword;
+    var oldPassword = req.body.oldPassword;
+    var errorPassword = false;
 
-    checkToken(req, function(result){
+        checkToken(req, function(result){
         if(!result.error){
             Users.findUserById(connection, req.params.id, function(userFound){
                 if(!userFound.error){
                     if(userFound.length > 0){
-                        Users.updateUser(connection, user, req.params.id, function(updatedUser){
-                            if(!updatedUser.error){
-                                res.sendStatus(200);
+                        if(newPassword){
+                            if(SHA256(oldPassword) != userFound[0].password){
+                                errorPassword = true;
                             }
                             else{
-                                res.status(500).send(updatedUser);
+                                user.password = SHA256(newPassword);
                             }
-                        });
+                        }
+                        if(!errorPassword){
+                            Users.updateUser(connection, user, req.params.id, function(updatedUser){
+                                if(!updatedUser.error){
+                                    res.sendStatus(200);
+                                }
+                                else{
+                                    res.status(500).send(updatedUser);
+                                }
+                            });
+                        }
+                        else{
+                            res.status(401).send("Le mot de passe ne correspond pas a l'ancien.");
+                        }
+
                     }
                     else{
                         res.status(404).send('No user by this id');

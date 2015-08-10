@@ -20,6 +20,7 @@
                     <li><a ui-sref="gamesOverview">Jeux</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" ng-if="ConnexionService.estConnecte()">
+                    <li><a ui-sref="account"><i class="fa fa-user"></i> {{username}}</a></li>
                     <li><a href="#" ng-click="logout()">Se deconnecter</a></li>
                 </ul>
             </div>
