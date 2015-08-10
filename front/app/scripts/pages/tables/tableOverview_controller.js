@@ -3,20 +3,13 @@ angular.module('mjTables').
     controller('TableOverviewCtrl', ['$scope', '$rootScope', 'UserAPI', 'TableAPI', 'ConnexionService', '$state', '$stateParams', function($scope, $rootScope, UserAPI, TableAPI, ConnexionService, $state, $stateParams){
 
         $scope.table = {};
+        $scope.table.id = $stateParams.id;
         $scope.message = '';
-        $scope.loaded = false;
 
         init();
 
         function init(message){
-            $scope.loaded = false;
             $scope.message = message;
-            TableAPI.getTable($stateParams.id).then(function(table){
-                $scope.table = table;
-                $scope.loaded = true;
-            }).catch(function(error){
-                console.log(error);
-            })
         }
 
         $scope.$on('playerRemoved', function(event, args){

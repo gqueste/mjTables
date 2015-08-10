@@ -1,6 +1,6 @@
 angular.module('mjTables').
 
-    controller('modalEditCtrl', ['$scope', '$modalInstance', 'TableAPI', 'GameAPI', 'StatusAPI', 'FrequenceAPI', 'idTable', function($scope, $modalInstance, TableAPI, GameAPI, StatusAPI, FrequenceAPI, idTable){
+    controller('editTableModalCtrl', ['$scope', '$modalInstance', 'TableAPI', 'GameAPI', 'StatusAPI', 'FrequenceAPI', 'idTable', function($scope, $modalInstance, TableAPI, GameAPI, StatusAPI, FrequenceAPI, idTable){
         $scope.table = {};
         $scope.games = [];
         $scope.status = [];

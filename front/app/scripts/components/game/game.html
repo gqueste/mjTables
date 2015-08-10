@@ -1,0 +1,48 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-sm-8">
+                <strong>{{game.nom}} </strong>
+            </div>
+            <div class="col-sm-4 text-right">
+                <a href="" ng-click="openEditModal()">Editer</a>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div role="alert" ng-if="messageSuccess" ng-bind-html="messageSuccess" class="alert alert-success"></div>
+        <div>
+            <p>{{game.description}}</p>
+        </div>
+        <div>
+            <h3>Tables jouant ce jeu</h3>
+            <div ng-if="!tables.length > 0">
+                <p>Il n'y a pour l'instant aucune table pour ce jeu. Pourquoi ne pas <a href="">proposer la vôtre ?</a></p>
+            </div>
+            <div ng-if="tables.length > 0">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>MJ</th>
+                            <th>Fréquence</th>
+                            <th>Nb Joueurs</th>
+                            <th>Capacité</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="table in tables">
+                            <td><a ui-sref="table({id: table.table_id})">{{table.table_nom}}</a></td>
+                            <td><a ui-sref="#">{{table.mj_username}}</a></td>
+                            <td>{{table.frequence_libelle}}</td>
+                            <td>{{table.nbJoueurs}}</td>
+                            <td>{{table.nbJoueursTotal}}</td>
+                            <td>{{table.status_libelle}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

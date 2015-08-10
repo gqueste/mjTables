@@ -55,8 +55,8 @@ angular.module('mjTables').
 
         $scope.openModalEdit = function(){
             var modalInstance = $modal.open({
-                templateUrl: 'scripts/components/table/modal/modalEdit.html',
-                controller: 'modalEditCtrl',
+                templateUrl: 'scripts/components/table/modal/editTableModal.html',
+                controller: 'editTableModalCtrl',
                 size: 'lg',
                 resolve:{
                     idTable: function () {
@@ -89,8 +89,8 @@ angular.module('mjTables').
 
         $scope.openModalDelete = function() {
             var modalInstance = $modal.open({
-                templateUrl: 'scripts/components/table/modal/modalDelete.html',
-                controller: 'modalDeleteCtrl',
+                templateUrl: 'scripts/components/table/modal/deleteTableModal.html',
+                controller: 'deleteTableModalCtrl',
                 size: 'sm',
                 resolve:{
                     idTable: function () {

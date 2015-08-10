@@ -7,7 +7,8 @@ angular.module('mjTables').
         return {
             getAll: getAll,
             getGame: getGame,
-            createGame : createGame
+            createGame : createGame,
+            updateGame: updateGame
         };
 
         function getAll(){
@@ -37,6 +38,19 @@ angular.module('mjTables').
             game.token = ConnexionService.getToken();
             return service
                 .post(game)
+                .then(function(data){
+                    return data;
+                })
+                .catch(function(error){
+                    throw error;
+                });
+        }
+
+        function updateGame(game){
+            game.token = ConnexionService.getToken();
+            return Restangular
+                .one('games', game.id)
+                .customPUT(game)
                 .then(function(data){
                     return data;
                 })
