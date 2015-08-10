@@ -1,6 +1,6 @@
 div.container
     h1 Jeux
-    button.btn.btn-primary Enregistrer un nouveau jeu
+    button.btn.btn-primary(ng-click='openCreateGameModal()') Enregistrer un nouveau jeu
     div.alert.alert-success(role="alert" ng-if="message" ng-bind-html="message")
     div(ng-repeat='game in games')
         mjtables-game(gameid='game.id')

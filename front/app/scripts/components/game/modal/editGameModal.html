@@ -1,6 +1,7 @@
 
 <div class="modal-header">
-    <h3 class="modal-title">Editer le Jeu</h3>
+    <h3 class="modal-title" ng-if="!isCreation()">Editer le Jeu</h3>
+    <h3 class="modal-title" ng-if="isCreation()">Enregistrer un Jeu</h3>
 </div>
 
 <div class="modal-body">

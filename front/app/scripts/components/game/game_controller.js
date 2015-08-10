@@ -43,8 +43,8 @@ angular.module('mjTables').
                 }
             });
 
-            modalInstance.result.then(function(updatedGame){
-                var message = 'Jeu <strong>' + updatedGame.nom + '</strong> a été mis à jour';
+            modalInstance.result.then(function(game){
+                var message = 'Jeu <strong>' + game.nom + '</strong> a été mis à jour';
                 init(message);
             });
         }
