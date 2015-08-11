@@ -41,6 +41,9 @@ angular.module('mjTables').
                     },
                     destinatairesIds: function(){
                         return [$scope.user.id];
+                    },
+                    idTable: function(){
+                        return -1;
                     }
                 }
             });

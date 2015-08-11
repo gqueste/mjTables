@@ -13,7 +13,8 @@ angular.module('mjTables').
             findByMail: findByMail,
             createUser : createUser,
             getUser : getUser,
-            updateUser : updateUser
+            updateUser : updateUser,
+            sendMail : sendMail
         };
 
         function getAll(){
@@ -89,6 +90,21 @@ angular.module('mjTables').
             return Restangular
                 .one('users', id)
                 .customPUT(user)
+                .then(function(data){
+                    return data;
+                })
+                .catch(function(error){
+                    throw error;
+                });
+        }
+
+        function sendMail(mail){
+            mail.token = ConnexionService.getToken();
+            var dest = mail.destinataires[0]; //TODO change for logic : a 2 dest, le sender et receiver ordonnes par id
+            return Restangular
+                .one('users', dest.id)
+                .all('mail')
+                .post({mail : mail})
                 .then(function(data){
                     return data;
                 })

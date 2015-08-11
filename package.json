@@ -31,6 +31,7 @@
     "router": "^1.1.1"
   },
   "devDependencies": {
+    "foreman": "^1.4.1",
     "karma": "^0.12.37",
     "karma-jasmine": "^0.3.6 ",
     "karma-chrome-launcher": "^0.2.0",

@@ -44,7 +44,7 @@
         <a href="#" ng-click="rejoindreTable()">Rejoignez la table.</a>
     </div>
     <div ng-if="isAdmin() || isAlreadyPlayer()">
-        <button class="btn btn-primary">Envoyer un message à la table</button>
+        <button class="btn btn-primary" ng-click="openModalMail()">Envoyer un message à la table</button>
         <button class="btn btn-danger" ng-if="isAdmin()" ng-click="openModalDelete()">Supprimer table</button>
     </div>
 </div>

@@ -71,6 +71,30 @@ angular.module('mjTables').
             });
         };
 
+        $scope.openModalMail = function(){
+            var modalInstance = $modal.open({
+                templateUrl: 'scripts/components/mails/mailModal.html',
+                controller: 'MailCtrl',
+                size: 'lg',
+                resolve:{
+                    envoyeurId: function () {
+                        return ConnexionService.getCurrentUserId();
+                    },
+                    destinatairesIds: function(){
+                        return getAllInvolvedIds();
+                    },
+                    idTable: function(){
+                        return $scope.$scope.tableid;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function(){
+                var message = 'Un mail a bien été envoyé.';
+                init(null, message);
+            });
+        };
+
         $scope.removePlayer = function(user_id){
             TableAPI.removePlayerFromTable($scope.tableid, user_id).then(function(){
                 $rootScope.$broadcast('playerRemoved', {table_id : $scope.tableid, user_id : user_id});
@@ -106,4 +130,13 @@ angular.module('mjTables').
                 $rootScope.$broadcast('tableDeleted', {table_nom : $scope.table.table_nom});
             });
         };
+
+        function getAllInvolvedIds(){
+            var ret = [];
+            ret.push($scope.table.mj_id);
+            for(var i = 0; i < $scope.players.length; i++){
+                ret.push($scope.players[i].id);
+            }
+            return ret;
+        }
     }]);
