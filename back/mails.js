@@ -11,7 +11,7 @@ module.exports = {
             }
         });
 
-        var from = mail.envoyeur.username + ' <mjtables.conjurestemporel@gmail.com>';
+        var from = mail.envoyeur.username + '[Conjurés] <mjtables.conjurestemporel@gmail.com>';
         var to = getDestinatairesMails();
         var subject = mail.objet;
         var text = mail.message;

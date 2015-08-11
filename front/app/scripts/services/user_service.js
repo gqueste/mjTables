@@ -99,12 +99,12 @@ angular.module('mjTables').
         }
 
         function sendMail(mail){
-            mail.token = ConnexionService.getToken();
+            var token = ConnexionService.getToken();
             var dest = mail.destinataires[0]; //TODO change for logic : a 2 dest, le sender et receiver ordonnes par id
             return Restangular
                 .one('users', dest.id)
                 .all('mail')
-                .post({mail : mail})
+                .post({mail : mail, token:token})
                 .then(function(data){
                     return data;
                 })

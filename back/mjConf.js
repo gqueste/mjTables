@@ -8,7 +8,7 @@ module.exports = {
         }
     },
     getPassword : function(){
-        if(process.env.MAIL_ADRESSE){
+        if(process.env.MAIL_PASSWORD){
             return process.env.MAIL_PASSWORD;
         }
         else{

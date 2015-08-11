@@ -1,6 +1,6 @@
 angular.module('mjTables').
 
-    controller('MailCtrl', ['$scope', '$rootScope', '$modalInstance', 'destinatairesIds', 'envoyeurId', 'UserAPI', 'idTable', function($scope, $rootScope, $modalInstance, destinatairesIds, envoyeurId, UserAPI, idTable){
+    controller('MailCtrl', ['$scope', '$rootScope', '$modalInstance', 'destinatairesIds', 'envoyeurId', 'UserAPI', 'idTable', 'TableAPI', function($scope, $rootScope, $modalInstance, destinatairesIds, envoyeurId, UserAPI, idTable, TableAPI){
 
         $scope.mail = {};
 
@@ -12,7 +12,7 @@ angular.module('mjTables').
 
                 $scope.mail.destinataires = [];
                 for(var i = 0; i < destinatairesIds.length; i++){
-                    if(!destinatairesIds[i] == envoyeurId){
+                    if(destinatairesIds[i] != envoyeurId){
                         UserAPI.getUser(destinatairesIds[i]).then(function(user2){
                             $scope.mail.destinataires.push(user2);
                         }).catch(function(error){
@@ -27,9 +27,13 @@ angular.module('mjTables').
 
 
         $scope.ok = function () {
+            $scope.message = "Mail en cours d'envoi, patientez";
             if(idTable != -1){
-                //send mail to table
-                $modalInstance.close();
+                TableAPI.sendMail($scope.mail, idTable).then(function(){
+                    $modalInstance.close();
+                }).catch(function(error){
+                    console.log(error);
+                })
             }
             else{
                 UserAPI.sendMail($scope.mail).then(function(){

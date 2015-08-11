@@ -15,7 +15,8 @@ angular.module('mjTables').
             createTable : createTable,
             getPlayersForTable : getPlayersForTable,
             addPlayerToTable : addPlayerToTable,
-            removePlayerFromTable : removePlayerFromTable
+            removePlayerFromTable : removePlayerFromTable,
+            sendMail : sendMail
         };
 
         function getTable(id){
@@ -144,6 +145,21 @@ angular.module('mjTables').
                 .one('players',user_id)
                 .all('remove')
                 .post({token: ConnexionService.getToken()})
+                .then(function(data){
+                    return data;
+                })
+                .catch(function(error){
+                    throw error;
+                });
+        }
+
+        function sendMail(mail, table_id){
+            var token = ConnexionService.getToken();
+            return Restangular
+                .one('tables', table_id)
+                .all('players')
+                .all('mail')
+                .post({mail : mail, token:token})
                 .then(function(data){
                     return data;
                 })

@@ -84,7 +84,7 @@ angular.module('mjTables').
                         return getAllInvolvedIds();
                     },
                     idTable: function(){
-                        return $scope.$scope.tableid;
+                        return $scope.tableid;
                     }
                 }
             });

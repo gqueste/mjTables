@@ -481,7 +481,23 @@ app.post('/api/v1/tables/:idTable/players/:idUser/remove', function(req, res){
 app.post('/api/v1/tables/:idTable/players/mail', function(req, res) {
     checkToken(req, function(result){
         if(!result.error){
-
+            Tables.findTableById(connection, req.params.idTable, function(table) {
+                if (!table.error) {
+                    if (table.length > 0) {
+                        Mails.sendMail(req.body.mail, function(err){
+                            if(!err){
+                                res.sendStatus(200);
+                            }
+                            else{
+                                res.status(500).send(err);
+                            }
+                        });
+                    }
+                }
+                else{
+                    res.status(404).send(table.error);
+                }
+            });
         }
         else{
             res.status(403).send(result.error);

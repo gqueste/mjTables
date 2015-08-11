@@ -1,14 +1,14 @@
 var mysql      = require('mysql');
 module.exports = {
 	connection: function(){
-		if(process.env.DATABASEADDRESS){
-			return mysql.createConnection(process.env.DATABASEADDRESS);
+		if(process.env.CLEARDB_DATABASE_URL){
+			return mysql.createConnection(process.env.CLEARDB_DATABASE_URL);
 		}
 		else{
 			return mysql.createConnection({
 				host     : 'localhost',
 				user     : 'root',
-				password : 'password',
+				password : 'admin',
 				database : 'mjtables'
 			});
 		}
