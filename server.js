@@ -36,8 +36,9 @@ var allowCrossDomain = function(req, res, next) {
 };
 app.use(allowCrossDomain);
 
-connection.on('error', function(){
-   connection = database.connection();
+connection.on('error', function(err){
+    console.log(err.code);
+    //connection = database.connection();
 });
 
 
