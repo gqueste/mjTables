@@ -3,7 +3,7 @@ module.exports = {
 	connection: function(){
 		if(process.env.CLEARDB_DATABASE_URL){
 			var address = process.env.CLEARDB_DATABASE_URL;
-			var tab1 = process.env.CLEARDB_DATABASE_URL.parse('://');
+			var tab1 = address.parse('://');
 			var tab2 = tab1[1].parse(':');
 			var user = tab2[0];
 			var tab3 = tab2[1].parse('@');
