@@ -2,7 +2,22 @@ var express    = require("express");
 var bodyParser = require('body-parser');
 var app        = express();
 var database   = require("./back/database");
-var connection = database.connection();
+var connection = {};
+var connected = false;
+
+
+var reconnect = function(){
+    if(!connected){
+        connection = database.connection();
+        connection.on('error', function(err){
+            console.log(err.code);
+            connection.destroy();
+            connected = false;
+        });
+        connected = true;
+    }
+};
+
 var morgan     = require('morgan');
 var jwt    	   = require('jsonwebtoken');
 var SHA256 	   = require("crypto-js/sha256");
@@ -36,12 +51,6 @@ var allowCrossDomain = function(req, res, next) {
 };
 app.use(allowCrossDomain);
 
-connection.on('error', function(err){
-    console.log(err.code);
-    connection.destroy();
-    //connection = database.connection();
-});
-
 
 app.set('port', process.env.PORT || 9000);
 app.set('views', __dirname + '/front/app/views');
@@ -67,6 +76,7 @@ app.get("/api/v1", function(req, res){
 
 /**** USERS ****/
 app.get("/api/v1/users",function(req,res){
+    reconnect();
     var sendUsers = function(users){
         if(!users.error){
             res.status(200).send(users);
@@ -89,6 +99,7 @@ app.get("/api/v1/users",function(req,res){
 
 
 app.post("/api/v1/users",function(req,res){
+    reconnect();
     var user = {
         username : req.body.username,
         password : SHA256(req.body.password),
@@ -109,6 +120,7 @@ app.post("/api/v1/users",function(req,res){
 });
 
 app.get("/api/v1/users/:id",function(req,res){
+    reconnect();
     Users.findUserById(connection, req.params.id, function(user){
         if(!user.error){
             if(user.length > 0)
@@ -123,6 +135,7 @@ app.get("/api/v1/users/:id",function(req,res){
 });
 
 app.put("/api/v1/users/:id",function(req, res){
+    reconnect();
     var user = {
         username : req.body.username,
         email    : req.body.email
@@ -176,6 +189,7 @@ app.put("/api/v1/users/:id",function(req, res){
 
 
 app.post('/api/v1/users/login',	function(req, res) {
+    reconnect();
     Users.findByUsername(connection, req.body.username, function(user){
         if(!user.error){
             if(user.length > 0){
@@ -204,6 +218,7 @@ app.post('/api/v1/users/login',	function(req, res) {
 });
 
 app.post('/api/v1/users/:id/mail',	function(req, res) {
+    reconnect();
     checkToken(req, function(result){
         if(!result.error){
             Users.findUserById(connection,req.params.id, function(user){
@@ -232,6 +247,7 @@ app.post('/api/v1/users/:id/mail',	function(req, res) {
 /**** TABLES ****/
 
 app.get('/api/v1/tables', function(req, res){
+    reconnect();
     var sendTables = function(tables){
         if(!tables.error){
             res.status(200).send(tables);
@@ -261,6 +277,7 @@ app.get('/api/v1/tables', function(req, res){
 
 
 app.post('/api/v1/tables', function(req, res){
+    reconnect();
     var table = {
         mj: req.body.mj,
         nom : req.body.nom,
@@ -288,6 +305,7 @@ app.post('/api/v1/tables', function(req, res){
 
 
 app.get('/api/v1/tables/:id', function(req,res){
+    reconnect();
     Tables.findTableById(connection, req.params.id, function(table){
         if(!table.error){
             if(table.length > 0)
@@ -302,6 +320,7 @@ app.get('/api/v1/tables/:id', function(req,res){
 });
 
 app.post('/api/v1/tables/:id/delete', function(req,res){
+    reconnect();
     checkToken(req, function(result){
         if(!result.error){
             Tables.findTableById(connection, req.params.id, function(table){
@@ -332,6 +351,7 @@ app.post('/api/v1/tables/:id/delete', function(req,res){
 
 
 app.put('/api/v1/tables/:id', function(req,res){
+    reconnect();
     var table = {
         mj: req.body.mj,
         nom : req.body.nom,
@@ -372,6 +392,7 @@ app.put('/api/v1/tables/:id', function(req,res){
 });
 
 app.get('/api/v1/tables/:id/players', function(req, res){
+    reconnect();
     Tables.findTableById(connection, req.params.id, function(table){
         if(!table.error){
             if(table.length > 0){
@@ -394,6 +415,7 @@ app.get('/api/v1/tables/:id/players', function(req, res){
 });
 
 app.post('/api/v1/tables/:id/players', function(req, res){
+    reconnect();
     var user_id = req.body.id;
     var table_id = req.params.id;
     checkToken(req, function(result){
@@ -436,6 +458,7 @@ app.post('/api/v1/tables/:id/players', function(req, res){
 });
 
 app.post('/api/v1/tables/:idTable/players/:idUser/remove', function(req, res){
+    reconnect();
     checkToken(req, function(result){
        if(!result.error){
            Tables.findTableById(connection, req.params.idTable, function(table){
@@ -476,6 +499,7 @@ app.post('/api/v1/tables/:idTable/players/:idUser/remove', function(req, res){
 });
 
 app.post('/api/v1/tables/:idTable/players/mail', function(req, res) {
+    reconnect();
     checkToken(req, function(result){
         if(!result.error){
             Tables.findTableById(connection, req.params.idTable, function(table) {
@@ -505,6 +529,7 @@ app.post('/api/v1/tables/:idTable/players/mail', function(req, res) {
 
 /**** FREQUENCES ****/
 app.get('/api/v1/frequences', function(req, res){
+    reconnect();
     Frequences.getAllFrequences(connection, function(freqs){
         if(!freqs.error){
             res.status(200).send(freqs);
@@ -516,6 +541,7 @@ app.get('/api/v1/frequences', function(req, res){
 });
 
 app.get('/api/v1/frequences/:id', function(req, res){
+    reconnect();
     Frequences.findFrequencesById(connection, req.params.id, function(freq){
         if(!freq.error){
             if(freq.length > 0){
@@ -534,6 +560,7 @@ app.get('/api/v1/frequences/:id', function(req, res){
 
 /**** STATUS ****/
 app.get('/api/v1/status', function(req, res){
+    reconnect();
     Status.getAllStatus(connection, function(status){
         if(!status.error){
             res.status(200).send(status);
@@ -545,6 +572,7 @@ app.get('/api/v1/status', function(req, res){
 });
 
 app.get('/api/v1/status/:id', function(req, res){
+    reconnect();
     Status.findStatusById(connection, req.params.id, function(status){
         if(!status.error){
             if(status.length > 0){
@@ -563,6 +591,7 @@ app.get('/api/v1/status/:id', function(req, res){
 
 /**** GAMES ****/
 app.get('/api/v1/games', function(req, res){
+    reconnect();
     Games.getAllGames(connection, function(games){
         if(!games.error){
             res.status(200).send(games);
@@ -575,6 +604,7 @@ app.get('/api/v1/games', function(req, res){
 
 app.get('/api/v1/games/:id', function(req, res){
     Games.findGameById(connection, req.params.id, function(games){
+        reconnect();
         if(!games.error){
             if(games.length > 0){
                 res.status(200).send(games[0]);
@@ -590,6 +620,7 @@ app.get('/api/v1/games/:id', function(req, res){
 });
 
 app.put('/api/v1/games/:id', function(req, res){
+    reconnect();
     var game = {
         nom: req.body.nom,
         description: req.body.description
@@ -624,6 +655,7 @@ app.put('/api/v1/games/:id', function(req, res){
 });
 
 app.post('/api/v1/games', function(req, res){
+    reconnect();
     var game = {
         nom: req.body.nom,
         description: req.body.description
