@@ -3,6 +3,7 @@ module.exports = {
     findFrequencesById : function(id, callback){
         var connection = database.connection();
         connection.query('SELECT * from frequences where id = ?', [id] , function(err, rows) {
+            connection.destroy();
             if (!err){
                 callback(rows)
             }
@@ -10,12 +11,12 @@ module.exports = {
                 err.error = true;
                 callback(err);
             }
-            connection.destroy();
         });
     },
     getAllFrequences : function(callback){
         var connection = database.connection();
         connection.query('SELECT * from frequences', function(err, rows) {
+            connection.destroy();
             if (!err){
                 callback(rows);
             }
@@ -23,7 +24,6 @@ module.exports = {
                 err.error = true;
                 callback(err);
             }
-            connection.destroy();
         });
     }
 };
