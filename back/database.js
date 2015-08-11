@@ -2,7 +2,7 @@ var mysql      = require('mysql');
 module.exports = {
 	connection: function(){
 		if(process.env.CLEARDB_DATABASE_URL){
-			var address = process.env.CLEARDB_DATABASE_URL;
+			var address = process.env.CLEARDB_DATABASE_URL.toString();
 			var tab1 = address.parse('://');
 			var tab2 = tab1[1].parse(':');
 			var user = tab2[0];
