@@ -22,106 +22,115 @@ module.exports = {
         req += 'join frequences on tables.frequence = frequences.id ';
         req += 'where tables.id = ? ';
         connection.query(req, [id] , function(err, rows) {
-            connection.destroy();
-            if (!err){
-                callback(rows)
-            }
-            else{
-                err.error = true;
-                callback(err);
-            }
+            connection.end(function(){
+                if (!err){
+                    callback(rows)
+                }
+                else{
+                    err.error = true;
+                    callback(err);
+                }
+            });
         });
     },
     getAllTables : function(callback){
         var connection = database.connection();
         connection.query('select id from tables', function(err, rows) {
-            connection.destroy();
-            if (!err){
-                callback(rows);
-            }
-            else{
-                err.error = true;
-                callback(err);
-            }
+            connection.end(function(){
+                if (!err){
+                    callback(rows)
+                }
+                else{
+                    err.error = true;
+                    callback(err);
+                }
+            });
         });
     },
     insertTable : function(table, callback){
         var connection = database.connection();
         connection.query("INSERT INTO tables SET ?", [table], function(err, result){
-            connection.destroy();
-            if(!err)
-                callback(result.insertId);
-            else{
-                err.error = true;
-                callback(err);
-            }
+            connection.end(function(){
+                if (!err){
+                    callback(result.insertId);
+                }
+                else{
+                    err.error = true;
+                    callback(err);
+                }
+            });
         });
     },
     updateTable : function(table, id, callback){
         var connection = database.connection();
         connection.query("UPDATE tables set ? where id = ?", [table, id], function(err) {
-            connection.destroy();
-            if (!err){
-                table.id = id;
-                callback(table);
-            }
-            else{
-                err.error = true;
-                callback(err);
-            }
+            connection.end(function(){
+                if (!err){
+                    table.id = id;
+                    callback(table);
+                }
+                else{
+                    err.error = true;
+                    callback(err);
+                }
+            });
         });
     },
     findPlayersForTable : function(id, callback) {
         var connection = database.connection();
         connection.query('select user_id from users_tables where users_tables.table_id = ?', [id], function(err, rows) {
-            connection.destroy();
-            if(!err){
-                callback(rows);
-            }
-            else{
-                err.error = true;
-                callback(err);
-            }
+            connection.end(function(){
+                if (!err){
+                    callback(rows)
+                }
+                else{
+                    err.error = true;
+                    callback(err);
+                }
+            });
         })
     },
     findTablesForMJ : function(id, callback) {
         var connection = database.connection();
         var req = 'select id from tables where mj = ? ';
         connection.query(req, [id], function(err, rows) {
-            connection.destroy();
-            if(!err){
-                callback(rows);
-            }
-            else{
-                err.error = true;
-                callback(err);
-            }
+            connection.end(function(){
+                if (!err){
+                    callback(rows)
+                }
+                else{
+                    err.error = true;
+                    callback(err);
+                }
+            });
         })
     },
     findTablesForPlayer : function(id, callback) {
         var connection = database.connection();
         connection.query('select table_id as id from users_tables where users_tables.user_id = ?', [id], function(err, rows) {
-            connection.destroy();
-            if(!err){
-                callback(rows);
-            }
-            else{
-                err.error = true;
-                callback(err);
-            }
+            connection.end(function(){
+                if (!err){
+                    callback(rows)
+                }
+                else{
+                    err.error = true;
+                    callback(err);
+                }
+            });
         })
     },
     findTablesForGame : function(id, callback) {
         var connection = database.connection();
         connection.query('select id from tables where game = ?', [id], function(err, rows) {
-            connection.destroy();
-            if(!err){
-                callback(rows);
-            }
-            else{
-                err.error = true;
-                callback(err);
-            }
+            connection.end(function(){
+                if (!err){
+                    callback(rows)
+                }
+                else{
+                    err.error = true;
+                    callback(err);
+                }
+            });
         })
     },
     findOtherTables : function(id, callback) {
@@ -135,14 +144,15 @@ module.exports = {
         req += '    where user_id = ? ';
         req += ');';
         connection.query(req, [id, id], function(err, rows) {
-            connection.destroy();
-            if(!err) {
-                callback(rows);
-            }
-            else {
-                err.error = true;
-                callback(err);
-            }
+            connection.end(function(){
+                if (!err){
+                    callback(rows)
+                }
+                else{
+                    err.error = true;
+                    callback(err);
+                }
+            });
         })
     },
     addPlayerToTable : function(user_id, table_id, callback){
@@ -154,14 +164,15 @@ module.exports = {
         connection.query('INSERT INTO users_tables set ?',[user_table], function(err){
             if (!err){
                 connection.query('update tables set nbJoueurs = nbJoueurs+1 where id = ?', [table_id], function(err2){
-                    connection.destroy();
-                    if(!err2){
-                        callback();
-                    }
-                    else{
-                        err2.error = true;
-                        callback(err2);
-                    }
+                    connection.end(function(){
+                        if(!err2){
+                            callback();
+                        }
+                        else{
+                            err2.error = true;
+                            callback(err2);
+                        }
+                    });
                 });
             }
             else{
@@ -176,14 +187,15 @@ module.exports = {
         connection.query('DELETE from users_tables where user_id = ? and table_id = ?', [user_id, table_id], function(err){
             if(!err){
                 connection.query('update tables set nbJoueurs = nbJoueurs-1 where id = ?', [table_id], function(err2){
-                    connection.destroy();
-                    if(!err2){
-                        callback();
-                    }
-                    else{
-                        err2.error = true;
-                        callback(err2);
-                    }
+                    connection.end(function(){
+                        if(!err2){
+                            callback();
+                        }
+                        else{
+                            err2.error = true;
+                            callback(err2);
+                        }
+                    });
                 });
             }
             else{
@@ -198,14 +210,15 @@ module.exports = {
         connection.query('DELETE from users_tables where table_id = ?', [table_id], function(err){
             if(!err){
                 connection.query('Delete from tables where id = ?', [table_id], function(err2){
-                    connection.destroy();
-                    if(!err2){
-                        callback();
-                    }
-                    else{
-                        err2.error = true;
-                        callback(err2);
-                    }
+                    connection.end(function(){
+                        if(!err2){
+                            callback();
+                        }
+                        else{
+                            err2.error = true;
+                            callback(err2);
+                        }
+                    });
                 });
             }
             else{
