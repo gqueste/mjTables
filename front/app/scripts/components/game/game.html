@@ -34,7 +34,7 @@
                     <tbody>
                         <tr ng-repeat="table in tables">
                             <td><a ui-sref="table({id: table.table_id})">{{table.table_nom}}</a></td>
-                            <td><a ui-sref="#">{{table.mj_username}}</a></td>
+                            <td><a ui-sref="user({id: table.mj_id})">{{table.mj_username}}</a></td>
                             <td>{{table.frequence_libelle}}</td>
                             <td>{{table.nbJoueurs}}</td>
                             <td>{{table.nbJoueursTotal}}</td>

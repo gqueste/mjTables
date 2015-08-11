@@ -5,7 +5,7 @@
                 <strong>{{table.table_nom}} </strong>
                 (<a ui-sref="game({id: table.game_id})">{{table.game_nom}}</a>)
                 <span> par</span>
-                <a ui-sref="#"> {{table.mj_username}}</a></div>
+                <a ui-sref="user({id: table.mj_id})"> {{table.mj_username}}</a></div>
             <div class="col-sm-4 text-right">
                 <a href="" ng-if="isAdmin()" ng-click="openModalEdit()">Editer</a>
                 <span> {{table.status_libelle}}</span></div>
@@ -34,7 +34,7 @@
         </thead>
         <tbody>
         <tr ng-repeat="player in players">
-            <td><a ui-sref="#">{{player.username}}</a></td>
+            <td><a ui-sref="user({id: player.id})">{{player.username}}</a></td>
             <td ng-if="isAdmin() || isAlreadyPlayer()"><a href="#" class="fa fa-times-circle fa-2x" ng-if="isAdmin() || ConnexionService.getCurrentUserId() == player.id" ng-click="removePlayer(player.id)"></a></td>
         </tr>
         </tbody>

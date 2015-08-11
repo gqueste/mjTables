@@ -1,0 +1,12 @@
+div.container
+    h1 {{user.username}}
+    button.btn.btn-primary(ng-click='openSendMailModal()') Envoyer un message
+    div.alert.alert-success(role="alert" ng-if="message" ng-bind-html="message")
+    div(ng-if='tablesMasterisees.length > 0')
+        h2 Tables masterisées
+        div(ng-repeat='tableMasterisee in tablesMasterisees')
+            mjtables-table(tableid='tableMasterisee.id')
+    div(ng-if='tablesJouees.length > 0')
+        h2 Tables jouées
+        div(ng-repeat='tableJouee in tablesJouees')
+            mjtables-table(tableid='tableJouee.id')
