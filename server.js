@@ -38,7 +38,7 @@ app.use(allowCrossDomain);
 
 connection.on('error', function(err){
     console.log(err.code);
-    //connection = database.connection();
+    connection = database.connection();
 });
 
 
