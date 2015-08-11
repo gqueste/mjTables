@@ -14,20 +14,20 @@ angular.module('mjTables').
             TableAPI.findTablesForMJ(ConnexionService.getCurrentUserId())
                 .then(function(tables){
                     $scope.tablesForMJ = tables;
-                })
-                .catch(function(error){
-                    console.log(error);
-                });
-            TableAPI.findTablesForPlayer(ConnexionService.getCurrentUserId())
-                .then(function(tables){
-                    $scope.tablesForPlayer = tables;
-                })
-                .catch(function(error){
-                    console.log(error);
-                });
-            TableAPI.findOtherTablesForPlayer(ConnexionService.getCurrentUserId())
-                .then(function(tables){
-                    $scope.otherTables = tables;
+                    TableAPI.findTablesForPlayer(ConnexionService.getCurrentUserId())
+                        .then(function(tables){
+                            $scope.tablesForPlayer = tables;
+                            TableAPI.findOtherTablesForPlayer(ConnexionService.getCurrentUserId())
+                                .then(function(tables){
+                                    $scope.otherTables = tables;
+                                })
+                                .catch(function(error){
+                                    console.log(error);
+                                });
+                        })
+                        .catch(function(error){
+                            console.log(error);
+                        });
                 })
                 .catch(function(error){
                     console.log(error);
