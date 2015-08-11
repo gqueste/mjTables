@@ -1,89 +1,68 @@
-var database   = require("./database");
 module.exports = {
-    findUserById : function(id, callback){
-        var connection = database.connection();
+    findUserById : function(connection, id, callback){
         connection.query('SELECT * from users where id = ?', [id] , function(err, rows) {
-            connection.end(function(){
-                if (!err){
-                    callback(rows)
-                }
-                else{
-                    err.error = true;
-                    callback(err);
-                }
-            });
+            if (!err){
+                callback(rows)
+            }
+            else{
+                err.error = true;
+                callback(err);
+            }
         });
     },
-    getAllUsers : function(callback){
-        var connection = database.connection();
+    getAllUsers : function(connection, callback){
         connection.query('SELECT * from users', function(err, rows) {
-            connection.end(function(){
-                if (!err){
-                    callback(rows)
-                }
-                else{
-                    err.error = true;
-                    callback(err);
-                }
-            });
+            if (!err){
+                callback(rows);
+            }
+            else{
+                err.error = true;
+                callback(err);
+            }
         });
     },
-    insertUser : function(user, callback){
-        var connection = database.connection();
+    insertUser : function(connection, user, callback){
         connection.query("INSERT INTO users SET ?", [user], function(err, result){
-            connection.end(function(){
-                if(!err)
-                    callback(result.insertId);
-                else{
-                    err.error = true;
-                    callback(err);
-                }
-            });
-
+            if(!err)
+                callback(result.insertId);
+            else{
+                err.error = true;
+                callback(err);
+            }
         });
     },
-    updateUser : function(user, id, callback){
-        var connection = database.connection();
+    updateUser : function(connection, user, id, callback){
         connection.query("UPDATE users set ? where id = ?", [user, id], function(err) {
-            connection.end(function(){
-                if (!err){
-                    user.id = id;
-                    callback(user);
-                }
-                else{
-                    err.error = true;
-                    callback(err);
-                }
-            });
-
+            if (!err){
+                user.id = id;
+                callback(user);
+            }
+            else{
+                err.error = true;
+                callback(err);
+            }
         });
     },
-    findByUsername : function(username, callback) {
-        var connection = database.connection();
+    findByUsername : function(connection, username, callback) {
         connection.query("Select * from users where username = ?", [username], function(err, rows) {
-            connection.end(function(){
-                if (!err){
-                    callback(rows)
-                }
-                else{
-                    err.error = true;
-                    callback(err);
-                }
-            });
+            if(!err){
+                callback(rows);
+            }
+            else{
+                err.error = true;
+                callback(err);
+            }
         })
     },
-    findByMail : function(mail, callback){
-        var connection = database.connection();
+    findByMail : function(connection, mail, callback){
         connection.query("Select * from users where email = ?", [mail], function(err, rows) {
-            connection.end(function(){
-                if (!err){
-                    callback(rows)
-                }
-                else{
-                    err.error = true;
-                    callback(err);
-                }
-            });
+            if(!err){
+                callback(rows);
+            }
+            else{
+                err.error = true;
+                callback(err);
+            }
         })
     }
 };

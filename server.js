@@ -35,6 +35,15 @@ var allowCrossDomain = function(req, res, next) {
     }
 };
 app.use(allowCrossDomain);
+connection.connect(function(err){
+    if(!err) {
+        console.log("Database is connected ... \n\n");
+    } else {
+        console.log("Error connecting database ... \n\n");
+    }
+});
+
+
 
 
 app.set('port', process.env.PORT || 9000);

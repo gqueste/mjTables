@@ -1,31 +1,24 @@
-var database   = require("./database");
 module.exports = {
-    findFrequencesById : function(id, callback){
-        var connection = database.connection();
+    findFrequencesById : function(connection, id, callback){
         connection.query('SELECT * from frequences where id = ?', [id] , function(err, rows) {
-            connection.end(function(){
-                if (!err){
-                    callback(rows)
-                }
-                else{
-                    err.error = true;
-                    callback(err);
-                }
-            });
+            if (!err){
+                callback(rows)
+            }
+            else{
+                err.error = true;
+                callback(err);
+            }
         });
     },
-    getAllFrequences : function(callback){
-        var connection = database.connection();
+    getAllFrequences : function(connection, callback){
         connection.query('SELECT * from frequences', function(err, rows) {
-            connection.end(function(){
-                if (!err){
-                    callback(rows)
-                }
-                else{
-                    err.error = true;
-                    callback(err);
-                }
-            });
+            if (!err){
+                callback(rows);
+            }
+            else{
+                err.error = true;
+                callback(err);
+            }
         });
     }
 };

@@ -1,60 +1,46 @@
-var database   = require("./database");
 module.exports = {
-    findGameById : function(id, callback){
-        var connection = database.connection();
+    findGameById : function(connection, id, callback){
         connection.query('SELECT * from games where id = ?', [id] , function(err, rows) {
-            connection.end(function(){
-                if (!err){
-                    callback(rows)
-                }
-                else{
-                    err.error = true;
-                    callback(err);
-                }
-            });
+            if (!err){
+                callback(rows)
+            }
+            else{
+                err.error = true;
+                callback(err);
+            }
         });
     },
-    getAllGames : function(callback){
-        var connection = database.connection();
+    getAllGames : function(connection, callback){
         connection.query('SELECT * from games', function(err, rows) {
-            connection.end(function(){
-                if (!err){
-                    callback(rows)
-                }
-                else{
-                    err.error = true;
-                    callback(err);
-                }
-            });
+            if (!err){
+                callback(rows);
+            }
+            else{
+                err.error = true;
+                callback(err);
+            }
         });
     },
-    insertGame : function(game, callback){
-        var connection = database.connection();
+    insertGame : function(connection, game, callback){
         connection.query("INSERT INTO games SET ?", [game], function(err, result){
-            connection.end(function(){
-                if (!err){
-                    callback(result.insertId)
-                }
-                else{
-                    err.error = true;
-                    callback(err);
-                }
-            });
+            if(!err)
+                callback(result.insertId);
+            else{
+                err.error = true;
+                callback(err);
+            }
         });
     },
-    updateGame : function(game, id, callback){
-        var connection = database.connection();
+    updateGame : function(connection, game, id, callback){
         connection.query("UPDATE games set ? where id = ?", [game, id], function(err) {
-            connection.end(function(){
-                if (!err){
-                    game.id = id;
-                    callback(game);
-                }
-                else{
-                    err.error = true;
-                    callback(err);
-                }
-            });
+            if (!err){
+                game.id = id;
+                callback(game);
+            }
+            else{
+                err.error = true;
+                callback(err);
+            }
         });
     }
 };
