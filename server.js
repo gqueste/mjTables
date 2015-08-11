@@ -36,6 +36,10 @@ var allowCrossDomain = function(req, res, next) {
 };
 app.use(allowCrossDomain);
 
+connection.on('error', function(){
+   connection = database.connection();
+});
+
 
 app.set('port', process.env.PORT || 9000);
 app.set('views', __dirname + '/front/app/views');
