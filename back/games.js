@@ -1,5 +1,7 @@
+var database   = require("./database");
 module.exports = {
-    findGameById : function(connection, id, callback){
+    findGameById : function(id, callback){
+        var connection = database.connection();
         connection.query('SELECT * from games where id = ?', [id] , function(err, rows) {
             if (!err){
                 callback(rows)
@@ -8,9 +10,11 @@ module.exports = {
                 err.error = true;
                 callback(err);
             }
+            connection.destroy();
         });
     },
-    getAllGames : function(connection, callback){
+    getAllGames : function(callback){
+        var connection = database.connection();
         connection.query('SELECT * from games', function(err, rows) {
             if (!err){
                 callback(rows);
@@ -19,9 +23,11 @@ module.exports = {
                 err.error = true;
                 callback(err);
             }
+            connection.destroy();
         });
     },
-    insertGame : function(connection, game, callback){
+    insertGame : function(game, callback){
+        var connection = database.connection();
         connection.query("INSERT INTO games SET ?", [game], function(err, result){
             if(!err)
                 callback(result.insertId);
@@ -29,9 +35,11 @@ module.exports = {
                 err.error = true;
                 callback(err);
             }
+            connection.destroy();
         });
     },
-    updateGame : function(connection, game, id, callback){
+    updateGame : function(game, id, callback){
+        var connection = database.connection();
         connection.query("UPDATE games set ? where id = ?", [game, id], function(err) {
             if (!err){
                 game.id = id;
@@ -41,6 +49,7 @@ module.exports = {
                 err.error = true;
                 callback(err);
             }
+            connection.destroy();
         });
     }
 };

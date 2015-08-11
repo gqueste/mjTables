@@ -1,8 +1,6 @@
 var express    = require("express");
 var bodyParser = require('body-parser');
 var app        = express();
-var database   = require("./back/database");
-var connection = database.connection();
 var morgan     = require('morgan');
 var jwt    	   = require('jsonwebtoken');
 var SHA256 	   = require("crypto-js/sha256");
@@ -35,15 +33,6 @@ var allowCrossDomain = function(req, res, next) {
     }
 };
 app.use(allowCrossDomain);
-connection.connect(function(err){
-    if(!err) {
-        console.log("Database is connected ... \n\n");
-    } else {
-        console.log("Error connecting database ... \n\n");
-    }
-});
-
-
 
 
 app.set('port', process.env.PORT || 9000);
@@ -79,13 +68,13 @@ app.get("/api/v1/users",function(req,res){
     };
 
     if(req.query.username){
-        Users.findByUsername(connection, req.query.username, sendUsers);
+        Users.findByUsername(req.query.username, sendUsers);
     }
     else if(req.query.mail){
-        Users.findByMail(connection, req.query.mail, sendUsers);
+        Users.findByMail(req.query.mail, sendUsers);
     }
     else{
-        Users.getAllUsers(connection, sendUsers);
+        Users.getAllUsers(sendUsers);
     }
 });
 
@@ -99,7 +88,7 @@ app.post("/api/v1/users",function(req,res){
     };
     var code = req.body.code;
     if(code === createUserCode){
-        Users.insertUser(connection, user, function(id){
+        Users.insertUser(user, function(id){
             if(!id.error)
                 res.status(201).send({id: id});
             else
@@ -112,7 +101,7 @@ app.post("/api/v1/users",function(req,res){
 });
 
 app.get("/api/v1/users/:id",function(req,res){
-    Users.findUserById(connection, req.params.id, function(user){
+    Users.findUserById(req.params.id, function(user){
         if(!user.error){
             if(user.length > 0)
                 res.status(200).send(user[0]);
@@ -136,7 +125,7 @@ app.put("/api/v1/users/:id",function(req, res){
 
         checkToken(req, function(result){
         if(!result.error){
-            Users.findUserById(connection, req.params.id, function(userFound){
+            Users.findUserById(req.params.id, function(userFound){
                 if(!userFound.error){
                     if(userFound.length > 0){
                         if(newPassword){
@@ -148,7 +137,7 @@ app.put("/api/v1/users/:id",function(req, res){
                             }
                         }
                         if(!errorPassword){
-                            Users.updateUser(connection, user, req.params.id, function(updatedUser){
+                            Users.updateUser(user, req.params.id, function(updatedUser){
                                 if(!updatedUser.error){
                                     res.sendStatus(200);
                                 }
@@ -179,7 +168,7 @@ app.put("/api/v1/users/:id",function(req, res){
 
 
 app.post('/api/v1/users/login',	function(req, res) {
-    Users.findByUsername(connection, req.body.username, function(user){
+    Users.findByUsername(req.body.username, function(user){
         if(!user.error){
             if(user.length > 0){
                 user = user[0];
@@ -209,7 +198,7 @@ app.post('/api/v1/users/login',	function(req, res) {
 app.post('/api/v1/users/:id/mail',	function(req, res) {
     checkToken(req, function(result){
         if(!result.error){
-            Users.findUserById(connection,req.params.id, function(user){
+            Users.findUserById(req.params.id, function(user){
                 if(!user.error){
                     Mails.sendMail(req.body.mail, function(error){
                         if(!error){
@@ -244,21 +233,21 @@ app.get('/api/v1/tables', function(req, res){
     };
 
     if(req.query.mj){
-        Tables.findTablesForMJ(connection, req.query.mj, sendTables);
+        Tables.findTablesForMJ(req.query.mj, sendTables);
     }
     else if(req.query.player){
         if(req.query.others){
-            Tables.findOtherTables(connection, req.query.player, sendTables);
+            Tables.findOtherTables(req.query.player, sendTables);
         }
         else{
-            Tables.findTablesForPlayer(connection, req.query.player, sendTables);
+            Tables.findTablesForPlayer(req.query.player, sendTables);
         }
     }
     else if(req.query.game){
-        Tables.findTablesForGame(connection, req.query.game, sendTables);
+        Tables.findTablesForGame(req.query.game, sendTables);
     }
     else {
-        Tables.getAllTables(connection, sendTables);
+        Tables.getAllTables(sendTables);
     }
 });
 
@@ -276,7 +265,7 @@ app.post('/api/v1/tables', function(req, res){
     };
     checkToken(req, function(result){
         if(!result.error){
-            Tables.insertTable(connection, table, function(id){
+            Tables.insertTable(table, function(id){
                 if(!id.error)
                     res.status(201).send({id: id});
                 else
@@ -291,7 +280,7 @@ app.post('/api/v1/tables', function(req, res){
 
 
 app.get('/api/v1/tables/:id', function(req,res){
-    Tables.findTableById(connection, req.params.id, function(table){
+    Tables.findTableById(req.params.id, function(table){
         if(!table.error){
             if(table.length > 0)
                 res.status(200).send(table[0]);
@@ -307,10 +296,10 @@ app.get('/api/v1/tables/:id', function(req,res){
 app.post('/api/v1/tables/:id/delete', function(req,res){
     checkToken(req, function(result){
         if(!result.error){
-            Tables.findTableById(connection, req.params.id, function(table){
+            Tables.findTableById(req.params.id, function(table){
                 if(!table.error){
                     if(table.length > 0){
-                        Tables.deleteTable(connection, req.params.id, function(err){
+                        Tables.deleteTable(req.params.id, function(err){
                             if(!err){
                                 res.sendStatus(200);
                             }
@@ -347,10 +336,10 @@ app.put('/api/v1/tables/:id', function(req,res){
     };
     checkToken(req, function(result){
         if(!result.error){
-            Tables.findTableById(connection, req.params.id, function(tableFound){
+            Tables.findTableById(req.params.id, function(tableFound){
                 if(!tableFound.error){
                     if(tableFound.length > 0){
-                        Tables.updateTable(connection, table, req.params.id, function(updatedTable){
+                        Tables.updateTable(table, req.params.id, function(updatedTable){
                             if(!updatedTable.error){
                                 res.sendStatus(200);
                             }
@@ -375,10 +364,10 @@ app.put('/api/v1/tables/:id', function(req,res){
 });
 
 app.get('/api/v1/tables/:id/players', function(req, res){
-    Tables.findTableById(connection, req.params.id, function(table){
+    Tables.findTableById(req.params.id, function(table){
         if(!table.error){
             if(table.length > 0){
-                Tables.findPlayersForTable(connection, req.params.id, function(players){
+                Tables.findPlayersForTable(req.params.id, function(players){
                     if(!players.error){
                         res.status(200).send(players);
                     }
@@ -401,13 +390,13 @@ app.post('/api/v1/tables/:id/players', function(req, res){
     var table_id = req.params.id;
     checkToken(req, function(result){
         if(!result.error){
-            Tables.findTableById(connection, table_id, function(table){
+            Tables.findTableById(table_id, function(table){
                 if(!table.error){
                     if(table.length > 0){
-                        Users.findUserById(connection, user_id, function(user){
+                        Users.findUserById(user_id, function(user){
                             if(!user.error){
                                 if(user.length > 0){
-                                    Tables.addPlayerToTable(connection, user_id, table_id, function(err){
+                                    Tables.addPlayerToTable(user_id, table_id, function(err){
                                         if(!err){
                                             res.sendStatus(200);
                                         }
@@ -441,13 +430,13 @@ app.post('/api/v1/tables/:id/players', function(req, res){
 app.post('/api/v1/tables/:idTable/players/:idUser/remove', function(req, res){
     checkToken(req, function(result){
        if(!result.error){
-           Tables.findTableById(connection, req.params.idTable, function(table){
+           Tables.findTableById(req.params.idTable, function(table){
                if(!table.error){
                    if(table.length > 0){
-                       Users.findUserById(connection, req.params.idUser, function(user){
+                       Users.findUserById(req.params.idUser, function(user){
                            if(!user.error){
                                if(user.length > 0){
-                                   Tables.removePlayerFromTable(connection, req.params.idUser, req.params.idTable, function(err){
+                                   Tables.removePlayerFromTable(req.params.idUser, req.params.idTable, function(err){
                                        if(!err){
                                            res.sendStatus(200);
                                        }
@@ -481,7 +470,7 @@ app.post('/api/v1/tables/:idTable/players/:idUser/remove', function(req, res){
 app.post('/api/v1/tables/:idTable/players/mail', function(req, res) {
     checkToken(req, function(result){
         if(!result.error){
-            Tables.findTableById(connection, req.params.idTable, function(table) {
+            Tables.findTableById(req.params.idTable, function(table) {
                 if (!table.error) {
                     if (table.length > 0) {
                         Mails.sendMail(req.body.mail, function(err){
@@ -508,7 +497,7 @@ app.post('/api/v1/tables/:idTable/players/mail', function(req, res) {
 
 /**** FREQUENCES ****/
 app.get('/api/v1/frequences', function(req, res){
-    Frequences.getAllFrequences(connection, function(freqs){
+    Frequences.getAllFrequences(function(freqs){
         if(!freqs.error){
             res.status(200).send(freqs);
         }
@@ -519,7 +508,7 @@ app.get('/api/v1/frequences', function(req, res){
 });
 
 app.get('/api/v1/frequences/:id', function(req, res){
-    Frequences.findFrequencesById(connection, req.params.id, function(freq){
+    Frequences.findFrequencesById(req.params.id, function(freq){
         if(!freq.error){
             if(freq.length > 0){
                 res.status(200).send(freq);
@@ -537,7 +526,7 @@ app.get('/api/v1/frequences/:id', function(req, res){
 
 /**** STATUS ****/
 app.get('/api/v1/status', function(req, res){
-    Status.getAllStatus(connection, function(status){
+    Status.getAllStatus(function(status){
         if(!status.error){
             res.status(200).send(status);
         }
@@ -548,7 +537,7 @@ app.get('/api/v1/status', function(req, res){
 });
 
 app.get('/api/v1/status/:id', function(req, res){
-    Status.findStatusById(connection, req.params.id, function(status){
+    Status.findStatusById(req.params.id, function(status){
         if(!status.error){
             if(status.length > 0){
                 res.status(200).send(status);
@@ -566,7 +555,7 @@ app.get('/api/v1/status/:id', function(req, res){
 
 /**** GAMES ****/
 app.get('/api/v1/games', function(req, res){
-    Games.getAllGames(connection, function(games){
+    Games.getAllGames(function(games){
         if(!games.error){
             res.status(200).send(games);
         }
@@ -577,7 +566,7 @@ app.get('/api/v1/games', function(req, res){
 });
 
 app.get('/api/v1/games/:id', function(req, res){
-    Games.findGameById(connection, req.params.id, function(games){
+    Games.findGameById(req.params.id, function(games){
         if(!games.error){
             if(games.length > 0){
                 res.status(200).send(games[0]);
@@ -599,10 +588,10 @@ app.put('/api/v1/games/:id', function(req, res){
     };
     checkToken(req, function(result){
         if(!result.error){
-            Games.findGameById(connection, req.params.id, function(gameFound){
+            Games.findGameById(req.params.id, function(gameFound){
                 if(!gameFound.error){
                     if(gameFound.length > 0){
-                        Games.updateGame(connection, game, req.params.id, function(updatedGame){
+                        Games.updateGame(game, req.params.id, function(updatedGame){
                             if(!updatedGame.error){
                                 res.sendStatus(200);
                             }
@@ -633,7 +622,7 @@ app.post('/api/v1/games', function(req, res){
     };
     checkToken(req, function(result){
         if(!result.error){
-            Games.insertGame(connection, game, function(id){
+            Games.insertGame(game, function(id){
                 if(!id.error)
                     res.status(201).send({id: id});
                 else
