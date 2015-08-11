@@ -46,7 +46,7 @@ connection.connect(function(err){
 
 
 
-app.set('port', 9000);
+app.set('port', process.env.PORT || 9000);
 app.set('views', __dirname + '/front/app/views');
 app.set('view engine', 'jade');
 
