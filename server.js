@@ -256,22 +256,22 @@ app.get('/api/v1/tables', function(req, res){
             res.status(500).send(tables);
     };
 
-    if(req.query.mj){
-        Tables.findTablesForMJ(connection, req.query.mj, sendTables);
+    if(req.query.others){
+        Tables.findOtherTables(connection, req.query.player, sendTables);
     }
-    else if(req.query.player){
-        if(req.query.others){
-            Tables.findOtherTables(connection, req.query.player, sendTables);
+    else if (req.query.player){
+        Tables.findTablesForPlayer(connection, req.query.player, sendTables);
+    }
+    else{
+        var frequencesID = [];
+        var statusID = [];
+        if(req.query.statuts){
+            statusID = req.query.statuts.split('|');
         }
-        else{
-            Tables.findTablesForPlayer(connection, req.query.player, sendTables);
+        if(req.query.frequences){
+            frequencesID = req.query.frequences.split('|');
         }
-    }
-    else if(req.query.game){
-        Tables.findTablesForGame(connection, req.query.game, sendTables);
-    }
-    else {
-        Tables.getAllTables(connection, sendTables);
+        Tables.getAllTables(connection, req.query.mj, req.query.game, statusID, frequencesID, sendTables);
     }
 });
 

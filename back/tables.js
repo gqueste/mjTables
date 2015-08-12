@@ -29,8 +29,52 @@ module.exports = {
             }
         });
     },
-    getAllTables : function(connection, callback){
-        connection.query('select id from tables', function(err, rows) {
+    getAllTables : function(connection, mj, game, statuts, frequences, callback){
+        var req = 'select id from tables ';
+        var search = '';
+        if(mj || game || statuts.length > 0 || frequences.length > 0){
+            search = 'where ';
+            if(mj){
+                if(search != 'where '){
+                    search += ' and ';
+                }
+                search += 'tables.mj = ' + connection.escape(mj);
+            }
+            if(game){
+                if(search != 'where '){
+                    search += ' and ';
+                }
+                search += 'tables.game = ' + connection.escape(game);
+            }
+            if(statuts.length > 0){
+                if(search != 'where '){
+                    search += ' and ';
+                }
+                search += '(';
+                search += 'tables.status = ' + connection.escape(statuts[0]);
+                if(statuts.length > 1){
+                    for(var i = 1; i < statuts.length; i++){
+                        search += ' or tables.status = ' + connection.escape(statuts[i]);
+                    }
+                }
+                search += ')';
+            }
+            if(frequences.length > 0){
+                if(search != 'where '){
+                    search += ' and ';
+                }
+                search += '(';
+                search += 'tables.frequence = ' + connection.escape(frequences[0]);
+                if(frequences.length > 1){
+                    for(var i = 1; i < frequences.length; i++){
+                        search += ' or tables.frequence = ' + connection.escape(frequences[i]);
+                    }
+                }
+                search += ')';
+            }
+        }
+        req = req + search;
+        connection.query(req, function(err, rows) {
             if (!err){
                 callback(rows);
             }
