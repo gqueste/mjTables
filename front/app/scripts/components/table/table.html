@@ -13,7 +13,7 @@
     </div>
     <div class="panel-body">
         <div>
-            <p>{{table.description}}</p>
+            <p ng-bind-html="table.description"></p>
             <p><i class="fa fa-calendar"></i> {{table.frequence_libelle}}</p>
             <p><i class="fa fa-users"></i> {{table.nbJoueurs}} / {{table.nbJoueursTotal}}</p>
         </div>

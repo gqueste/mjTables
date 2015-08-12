@@ -1,9 +1,10 @@
 angular.module('mjTables').
 
-    controller('editGameModalCtrl', ['$scope', '$rootScope', '$modalInstance', 'idGame', 'GameAPI', function($scope, $rootScope, $modalInstance, idGame, GameAPI){
+    controller('editGameModalCtrl', ['$scope', '$rootScope', '$modalInstance', 'idGame', 'GameAPI', 'TextAngularService', function($scope, $rootScope, $modalInstance, idGame, GameAPI, TextAngularService){
 
         $scope.game = {};
         $scope.game.id = idGame;
+        $scope.textAngular = TextAngularService;
 
         if(!$scope.isCreation){
             GameAPI.getGame(idGame).then(function(game){

@@ -27,7 +27,7 @@ module.exports = {
 				connectionLimit : 10,
 				host     : 'localhost',
 				user     : 'root',
-				password : 'admin',
+				password : 'password',
 				database : 'mjtables'
 			});
 		}

@@ -29,7 +29,8 @@
     "nodemailer": "^1.4.0",
     "nodemailer-wellknown": "^0.1.6",
     "restangular": "^1.5.1",
-    "router": "^1.1.1"
+    "router": "^1.1.1",
+    "textangular": "^1.4.3"
   },
   "devDependencies": {
     "foreman": "^1.4.1",

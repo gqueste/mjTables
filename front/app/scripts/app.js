@@ -4,5 +4,6 @@ angular.module('mjTables', [
     'ui.router',
     'ui.bootstrap',
     'ngCookies',
-    'ngSanitize'
+    'ngSanitize',
+    'textAngular'
 ]);

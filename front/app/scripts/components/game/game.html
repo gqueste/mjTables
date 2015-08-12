@@ -11,8 +11,7 @@
     </div>
     <div class="panel-body">
         <div role="alert" ng-if="messageSuccess" ng-bind-html="messageSuccess" class="alert alert-success"></div>
-        <div>
-            <p>{{game.description}}</p>
+        <div ng-bind-html="game.description">
         </div>
         <div>
             <h3>Tables jouant ce jeu</h3>

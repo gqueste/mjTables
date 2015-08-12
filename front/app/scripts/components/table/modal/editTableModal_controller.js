@@ -1,12 +1,13 @@
 angular.module('mjTables').
 
-    controller('editTableModalCtrl', ['$scope', '$modalInstance', 'TableAPI', 'GameAPI', 'StatusAPI', 'FrequenceAPI', 'idTable', 'ConnexionService', 'UserAPI', function($scope, $modalInstance, TableAPI, GameAPI, StatusAPI, FrequenceAPI, idTable, ConnexionService, UserAPI){
+    controller('editTableModalCtrl', ['$scope', '$modalInstance', 'TableAPI', 'GameAPI', 'StatusAPI', 'FrequenceAPI', 'idTable', 'ConnexionService', 'UserAPI', 'TextAngularService', function($scope, $modalInstance, TableAPI, GameAPI, StatusAPI, FrequenceAPI, idTable, ConnexionService, UserAPI, TextAngularService){
         $scope.table = {};
         $scope.games = [];
         $scope.status = [];
         $scope.frequences = [];
         $scope.newGame = {};
         $scope.addGameAction = false;
+        $scope.textAngular = TextAngularService;
 
         $scope.isCreation = function(){
             return idTable == -1;
