@@ -131,6 +131,29 @@ angular.module('mjTables').
             });
         };
 
+        $scope.getClasseLabelStatut = function(libelle){
+            var ret = {};
+            ret.label = true;
+            switch (libelle) {
+                case 'Recrute' :
+                    ret['label-success'] = true;
+                    break;
+                case 'Places disponibles' :
+                    ret['label-primary'] = true;
+                    break;
+                case 'Complète' :
+                    ret['label-danger'] = true;
+                    break;
+                case 'En pause' :
+                    ret['label-warning'] = true;
+                    break;
+                case 'Arrêtée' :
+                    ret['label-default'] = true;
+                    break;
+            }
+            return ret;
+        };
+
         function getAllInvolvedIds(){
             var ret = [];
             ret.push($scope.table.mj_id);

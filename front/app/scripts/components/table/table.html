@@ -8,14 +8,14 @@
                 <a ui-sref="user({id: table.mj_id})"> {{table.mj_username}}</a></div>
             <div class="col-sm-4 text-right">
                 <a href="" ng-if="isAdmin()" ng-click="openModalEdit()">Editer</a>
-                <span> {{table.status_libelle}}</span></div>
+                <span ng-class="getClasseLabelStatut(table.status_libelle)">{{table.status_libelle}}</span></div>
         </div>
     </div>
     <div class="panel-body">
         <div>
             <p>{{table.description}}</p>
-            <p>{{table.frequence_libelle}}</p>
-            <p>{{table.nbJoueurs}} / {{table.nbJoueursTotal}}</p>
+            <p><i class="fa fa-calendar"></i> {{table.frequence_libelle}}</p>
+            <p><i class="fa fa-users"></i> {{table.nbJoueurs}} / {{table.nbJoueursTotal}}</p>
         </div>
         <div ng-if="!isAlreadyPlayer() && !isAdmin()">
             <button class="btn btn-primary" ng-click="rejoindreTable()">Joindre la table</button>

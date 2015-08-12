@@ -108,7 +108,7 @@ module.exports = {
         })
     },
     findOtherTables : function(connection, id, callback) {
-        var req = 'select tables.id from tables ';
+        var req = 'select distinct tables.id from tables ';
         req += 'left join users_tables on users_tables.table_id = tables.id ';
         req += 'where tables.mj <> ? ';
         req += 'and tables.id NOT IN ( ';

@@ -8,6 +8,6 @@ CREATE TABLE `status` (
 
 INSERT INTO `status` (libelle) VALUES ('Recrute');
 INSERT INTO `status` (libelle) VALUES ('Places disponibles');
-INSERT INTO `status` (libelle) VALUES ('Complete');
+INSERT INTO `status` (libelle) VALUES ('Complète');
 INSERT INTO `status` (libelle) VALUES ('En pause');
-INSERT INTO `status` (libelle) VALUES ('Arretee');
+INSERT INTO `status` (libelle) VALUES ('Arrêtée');
