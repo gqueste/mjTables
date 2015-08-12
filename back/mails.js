@@ -15,13 +15,15 @@ module.exports = {
         var to = getDestinatairesMails();
         var subject = mail.objet;
         var text = mail.message;
+        var html = mail.message;
 
         // setup e-mail data with unicode symbols
         var mailOptions = {
             from: from,
             to: to,
             subject: subject,
-            text: text
+            text: text,
+            html: html
         };
 
         // send mail with defined transport object

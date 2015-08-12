@@ -6,18 +6,18 @@
 <div class="modal-body">
     <form class="form-horizontal">
         <div class="form-group">
-            <label class="col-sm-4 control-label">
+            <label class="col-sm-3 control-label">
                 Nom de la campagne
             </label>
-            <div class="col-sm-8">
+            <div class="col-sm-9">
                 <input class="form-control" type="text" ng-model="table.table_nom" placeholder="Nom">
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-4 control-label">
+            <label class="col-sm-3 control-label">
                 Jeu
             </label>
-            <div class="col-sm-8">
+            <div class="col-sm-9">
                 <select class="form-control" ng-model="table.game_id" ng-options="game.id as game.nom for game in games"></select>
             </div>
         </div>
@@ -31,7 +31,7 @@
                         <label class="col-sm-3 control-label">
                             Nom du nouveau jeu
                         </label>
-                        <div class="col-sm-8">
+                        <div class="col-sm-9">
                             <input class="form-control" type="text" ng-model="newGame.nom" placeholder="Nom du jeu">
                         </div>
                     </div>
@@ -39,7 +39,7 @@
                         <label class="col-sm-3 control-label">
                             Description
                         </label>
-                        <div class="col-sm-8">
+                        <div class="col-sm-9">
                             <textarea class="form-control" ng-model="newGame.description" placeholder="Description du jeu"></textarea>
                         </div>
                     </div>
@@ -50,42 +50,42 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-4 control-label">
+            <label class="col-sm-3 control-label">
                 Maître du Jeu
             </label>
-            <div class="col-sm-8">
+            <div class="col-sm-9">
                 <p class="form-control-static">{{table.mj_username}}</p>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-4 control-label">
+            <label class="col-sm-3 control-label">
                 Statut
             </label>
-            <div class="col-sm-8">
+            <div class="col-sm-9">
                 <select class="form-control" ng-model="table.status_id" ng-options="statut.id as statut.libelle for statut in status"></select>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-4 control-label">
+            <label class="col-sm-3 control-label">
                 Fréquence
             </label>
-            <div class="col-sm-8">
+            <div class="col-sm-9">
                 <select class="form-control" ng-model="table.frequence_id" ng-options="frequence.id as frequence.libelle for frequence in frequences"></select>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-4 control-label">
+            <label class="col-sm-3 control-label">
                 Nombre de Places disponibles
             </label>
-            <div class="col-sm-8">
+            <div class="col-sm-9">
                 <input class="form-control" type="number" ng-model="table.nbJoueursTotal">
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-4 control-label">
+            <label class="col-sm-3 control-label">
                 Description
             </label>
-            <div class="col-sm-8">
+            <div class="col-sm-9">
                 <text-angular ng-model="table.description" ta-toolbar="textAngular.getConfig()"></text-angular>
             </div>
         </div>

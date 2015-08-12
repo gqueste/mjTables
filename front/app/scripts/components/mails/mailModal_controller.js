@@ -1,8 +1,9 @@
 angular.module('mjTables').
 
-    controller('MailCtrl', ['$scope', '$rootScope', '$modalInstance', 'destinatairesIds', 'envoyeurId', 'UserAPI', 'idTable', 'TableAPI', function($scope, $rootScope, $modalInstance, destinatairesIds, envoyeurId, UserAPI, idTable, TableAPI){
+    controller('MailCtrl', ['$scope', '$rootScope', '$modalInstance', 'destinatairesIds', 'envoyeurId', 'UserAPI', 'idTable', 'TableAPI', 'TextAngularService', function($scope, $rootScope, $modalInstance, destinatairesIds, envoyeurId, UserAPI, idTable, TableAPI, TextAngularService){
 
         $scope.mail = {};
+        $scope.textAngular = TextAngularService;
 
         init();
 
