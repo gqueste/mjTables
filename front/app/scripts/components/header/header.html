@@ -18,6 +18,7 @@
                 <ul class="nav navbar-nav" ng-if="ConnexionService.estConnecte()">
                     <li><a ui-sref="tablesOverview">Tables</a></li>
                     <li><a ui-sref="gamesOverview">Jeux</a></li>
+                    <li><a ui-sref="search"><i class="fa fa-search"></i> Rechercher</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" ng-if="ConnexionService.estConnecte()">
                     <li><a ui-sref="account"><i class="fa fa-user"></i> {{username}}</a></li>
