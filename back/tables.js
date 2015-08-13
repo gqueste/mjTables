@@ -29,11 +29,18 @@ module.exports = {
             }
         });
     },
-    getAllTables : function(connection, mj, game, statuts, frequences, callback){
+    getAllTables : function(connection, nom, mj, game, statuts, frequences, callback){
         var req = 'select id from tables ';
         var search = '';
-        if(mj || game || statuts.length > 0 || frequences.length > 0){
+        if(nom || mj || game || statuts.length > 0 || frequences.length > 0){
             search = 'where ';
+            if(nom){
+                if(search != 'where '){
+                    search += ' and ';
+                }
+                nom = '%'+nom+'%';
+                search += "tables.nom like " + connection.escape(nom);
+            }
             if(mj){
                 if(search != 'where '){
                     search += ' and ';

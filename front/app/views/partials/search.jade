@@ -2,10 +2,54 @@ div.container
     h1 Rechercher une table
     div
         h2 Filtres
+        div
+            button.btn.btn-default(ng-click='reset()') Reset des filtres
         div.row
-            div.col-sm-6
+            div.col-sm-4
+                form
+                    div.form-group
+                        label.control-label Nom
+                        div
+                            input.form-control(type='text' ng-model='filtres.nom' placeholder='Nom table')
+                    div.form-group
+                        label.control-label MJ
+                        div
+                            input.form-control(type='text' ng-model='filtres.mj' placeholder='Nom MJ' typeahead='user as user.username for user in users | filter:{username:$viewValue}')
+                    div.form-group
+                        label.control-label Jeu
+                        div
+                            select.form-control(ng-model="filtres.game" ng-options="game.id as game.nom for game in games")
+            div.col-sm-4
                 h3 Frequences
-            div.col-sm-6
+                div.checkbox(ng-repeat='frequence in frequences')
+                    <label><input type="checkbox" ng-model='frequence.checked'>{{frequence.libelle}}</label>
+            div.col-sm-4
                 h3 Statuts
-
+                div.checkbox(ng-repeat='statut in status')
+                    <label><input type="checkbox" ng-model='statut.checked'>{{statut.libelle}}</label>
+        button.btn.btn-block.btn-primary(ng-click='search()') Rechercher
+    div(ng-if='resultats && resultats.length == 0')
+        div.alert.alert-warning Aucune table n'a été trouvée
     div(ng-if="resultats.length > 0")
+        table.table
+            thead
+                tr
+                    th Nom
+                    th MJ
+                    th Jeu
+                    th Fréquence
+                    th Nb Joueurs
+                    th Capacité
+                    th Statut
+            tbody
+                tr(ng-repeat="table in resultats")
+                    td
+                        a(ui-sref="table({id: table.table_id})") {{table.table_nom}}
+                    td
+                        a(ui-sref="user({id: table.mj_id})") {{table.mj_username}}
+                    td
+                        a(ui-sref="game({id: table.game_id})") {{table.game_nom}}
+                    td {{table.frequence_libelle}}
+                    td {{table.nbJoueurs}}
+                    td {{table.nbJoueursTotal}}
+                    td {{table.status_libelle}}

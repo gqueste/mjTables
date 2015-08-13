@@ -16,7 +16,8 @@ angular.module('mjTables').
             getPlayersForTable : getPlayersForTable,
             addPlayerToTable : addPlayerToTable,
             removePlayerFromTable : removePlayerFromTable,
-            sendMail : sendMail
+            sendMail : sendMail,
+            findAll : findAll
         };
 
         function getTable(id){
@@ -160,6 +161,33 @@ angular.module('mjTables').
                 .all('players')
                 .all('mail')
                 .post({mail : mail, token:token})
+                .then(function(data){
+                    return data;
+                })
+                .catch(function(error){
+                    throw error;
+                });
+        }
+
+        function findAll(nom, mj, game, frequences, statuts){
+            var query = {};
+            if(nom && nom != ''){
+                query.nom = nom;
+            }
+            if(mj){
+                query.mj = mj.id;
+            }
+            if(game && game != -1){
+                query.game = game;
+            }
+            if(statuts != ''){
+                query.statuts = statuts;
+            }
+            if(frequences != ''){
+                query.frequences = frequences;
+            }
+            return service
+                .getList(query)
                 .then(function(data){
                     return data;
                 })

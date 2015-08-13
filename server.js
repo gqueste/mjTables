@@ -271,7 +271,7 @@ app.get('/api/v1/tables', function(req, res){
         if(req.query.frequences){
             frequencesID = req.query.frequences.split('|');
         }
-        Tables.getAllTables(connection, req.query.mj, req.query.game, statusID, frequencesID, sendTables);
+        Tables.getAllTables(connection, req.query.nom, req.query.mj, req.query.game, statusID, frequencesID, sendTables);
     }
 });
 
