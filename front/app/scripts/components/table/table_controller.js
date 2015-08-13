@@ -97,6 +97,8 @@ angular.module('mjTables').
 
         $scope.removePlayer = function(user_id){
             TableAPI.removePlayerFromTable($scope.tableid, user_id).then(function(){
+                var message = 'Un joueur a bien été retiré de la table.';
+                init(null, message);
                 $rootScope.$broadcast('playerRemoved', {table_id : $scope.tableid, user_id : user_id});
             }).catch(function(error){
                 console.log(error);
@@ -105,6 +107,8 @@ angular.module('mjTables').
 
         $scope.rejoindreTable = function(){
             TableAPI.addPlayerToTable($scope.tableid, ConnexionService.getCurrentUserId()).then(function(){
+                var message = 'Un joueur a bien été ajouté.';
+                init(null, message);
                 $rootScope.$broadcast('playerAdded', {table_id : $scope.tableid, user_id : ConnexionService.getCurrentUserId()});
             }).catch(function(error){
                 console.log(error);
