@@ -21,8 +21,8 @@ var reconnect = function(){
 var morgan     = require('morgan');
 var jwt    	   = require('jsonwebtoken');
 var SHA256 	   = require("crypto-js/sha256");
-var createUserCode = "secretCodeForUserCreation";
-var secret = 'mjTablesVerySecretChuttt';
+var createUserCode = process.env.USERCREATION_CODE;
+var secret = process.env.WEBTOKEN_SECRET;
 
 var Users 	   = require("./back/users");
 var Tables     = require('./back/tables');
