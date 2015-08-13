@@ -21,11 +21,11 @@ div.container
                             select.form-control(ng-model="filtres.game" ng-options="game.id as game.nom for game in games")
             div.col-sm-4
                 h3 Frequences
-                div.checkbox(ng-repeat='frequence in frequences')
+                div.checkbox(ng-repeat="frequence in frequences | orderBy:'libelle'")
                     <label><input type="checkbox" ng-model='frequence.checked'>{{frequence.libelle}}</label>
             div.col-sm-4
                 h3 Statuts
-                div.checkbox(ng-repeat='statut in status')
+                div.checkbox(ng-repeat="statut in status | orderBy:'libelle'")
                     <label><input type="checkbox" ng-model='statut.checked'>{{statut.libelle}}</label>
         button.btn.btn-block.btn-primary(ng-click='search()') Rechercher
     div(ng-if='resultats && resultats.length == 0')
@@ -42,7 +42,7 @@ div.container
                     th Capacité
                     th Statut
             tbody
-                tr(ng-repeat="table in resultats")
+                tr(ng-repeat="table in resultats | orderBy:'table_nom'")
                     td
                         a(ui-sref="table({id: table.table_id})") {{table.table_nom}}
                     td

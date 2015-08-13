@@ -33,7 +33,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="player in players">
+        <tr ng-repeat="player in players | orderBy:'username'">
             <td><a ui-sref="user({id: player.id})">{{player.username}}</a></td>
             <td ng-if="isAdmin() || isAlreadyPlayer()"><a href="#" class="fa fa-times-circle fa-2x" ng-if="isAdmin() || ConnexionService.getCurrentUserId() == player.id" ng-click="removePlayer(player.id)"></a></td>
         </tr>
