@@ -107,21 +107,29 @@ app.post("/api/v1/users",function(req,res){
     };
     var code = req.body.code;
     if(code === createUserCode){
-        Users.insertUser(connection, user, function(id){
-            if(!id.error)
-                res.status(201).send({id: id});
-            else
-                res.status(500).send(id);
-        });
+        insertUser();
     }
     else{
         res.sendStatus(401);
+    }
+
+    function insertUser(){
+        Users.insertUser(connection, user, handleInsertionUser);
+    }
+
+    function handleInsertionUser(id){
+        if(!id.error)
+            res.status(201).send({id: id});
+        else
+            res.status(500).send(id);
     }
 });
 
 app.get("/api/v1/users/:id",function(req,res){
     reconnect();
-    Users.findUserById(connection, req.params.id, function(user){
+    Users.findUserById(connection, req.params.id, handleFindUser);
+
+    function handleFindUser(user){
         if(!user.error){
             if(user.length > 0)
                 res.status(200).send(user[0]);
@@ -131,7 +139,7 @@ app.get("/api/v1/users/:id",function(req,res){
         else{
             res.status(500).send(user);
         }
-    });
+    }
 });
 
 app.put("/api/v1/users/:id",function(req, res){
@@ -144,68 +152,76 @@ app.put("/api/v1/users/:id",function(req, res){
     var oldPassword = req.body.oldPassword;
     var errorPassword = false;
 
-        checkToken(req, function(result){
-        if(!result.error){
-            Users.findUserById(connection, req.params.id, function(userFound){
-                if(!userFound.error){
-                    if(userFound.length > 0){
-                        if(newPassword){
-                            if(SHA256(oldPassword) != userFound[0].password){
-                                errorPassword = true;
-                            }
-                            else{
-                                user.password = SHA256(newPassword);
-                            }
-                        }
-                        if(!errorPassword){
-                            Users.updateUser(connection, user, req.params.id, function(updatedUser){
-                                if(!updatedUser.error){
-                                    res.sendStatus(200);
-                                }
-                                else{
-                                    res.status(500).send(updatedUser);
-                                }
-                            });
-                        }
-                        else{
-                            res.status(401).send("Le mot de passe ne correspond pas a l'ancien.");
-                        }
+    checkToken(req, handleAuth);
 
-                    }
-                    else{
-                        res.status(404).send('No user by this id');
-                    }
-                }
-                else {
-                    res.status(500).send(userFound);
-                }
-            });
+    function handleAuth(result){
+        if(!result.error){
+            findUser();
         }
         else{
             res.status(403).send(result.error);
         }
-    });
+    }
+
+    function findUser(){
+        Users.findUserById(connection, req.params.id, handleFindUser);
+    }
+
+    function handleFindUser(userFound){
+        if(!userFound.error){
+            if(userFound.length > 0){
+                checkPassword(userFound[0]);
+            }
+            else{
+                res.status(404).send('No user by this id');
+            }
+        }
+        else {
+            res.status(500).send(userFound);
+        }
+    }
+
+    function checkPassword(userFound){
+        if(newPassword){
+            if(SHA256(oldPassword) != userFound.password){
+                errorPassword = true;
+            }
+            else{
+                user.password = SHA256(newPassword);
+            }
+        }
+        if(!errorPassword){
+           updateUser();
+        }
+        else{
+            res.status(401).send("Le mot de passe ne correspond pas a l'ancien.");
+        }
+    }
+
+    function updateUser(){
+        Users.updateUser(connection, user, req.params.id, handleUpdateUser);
+    }
+
+    function handleUpdateUser(updatedUser){
+        if(!updatedUser.error){
+            res.sendStatus(200);
+        }
+        else{
+            res.status(500).send(updatedUser);
+        }
+    }
 });
 
 
 app.post('/api/v1/users/login',	function(req, res) {
     reconnect();
-    Users.findByUsername(connection, req.body.username, function(user){
+    Users.findByUsername(connection, req.body.username, handleFindUser);
+
+    function handleFindUser(user){
         if(!user.error){
             if(user.length > 0){
                 user = user[0];
-                if(user.password != SHA256(req.body.password)){
-                    res.status(401).send("Password incorrect");
-                }
-                else{
-                    var token = jwt.sign(user, app.get('superSecret'), {
-                        expiresInMinutes: 1440 // expires in 24 hours
-                    });
-                    res.status(200).send({
-                        token: token,
-                        id: user.id
-                    });
-                }
+                checkPassword(user);
             }
             else{
                 res.status(404).send('No user by this username');
@@ -214,33 +230,66 @@ app.post('/api/v1/users/login',	function(req, res) {
         else{
             res.status(500).send(user);
         }
-    });
+    }
+
+    function checkPassword(user){
+        if(user.password != SHA256(req.body.password)){
+            res.status(401).send("Password incorrect");
+        }
+        else{
+            giveToken(user);
+        }
+    }
+
+    function giveToken(user){
+        var token = jwt.sign(user, app.get('superSecret'), {
+            expiresInMinutes: 1440 // expires in 24 hours
+        });
+        res.status(200).send({
+            token: token,
+            id: user.id
+        });
+    }
 });
 
 app.post('/api/v1/users/:id/mail',	function(req, res) {
     reconnect();
-    checkToken(req, function(result){
+    checkToken(req, handleAuth);
+
+    function handleAuth(result){
         if(!result.error){
-            Users.findUserById(connection,req.params.id, function(user){
-                if(!user.error){
-                    Mails.sendMail(req.body.mail, function(error){
-                        if(!error){
-                            res.sendStatus(200);
-                        }
-                        else{
-                            res.status(500).send(error);
-                        }
-                    });
-                }
-                else{
-                    res.status(500).send(user);
-                }
-            });
+            findUser();
         }
         else{
             res.status(403).send(result.error);
         }
-    });
+    }
+
+    function findUser(){
+        Users.findUserById(connection,req.params.id, handleFindUser);
+    }
+
+    function handleFindUser(user){
+        if(!user.error){
+            sendMail();
+        }
+        else{
+            res.status(500).send(user);
+        }
+    }
+
+    function sendMail(){
+        Mails.sendMail(req.body.mail, handleSendMail);
+    }
+
+    function handleSendMail(){
+        if(!error){
+            res.sendStatus(200);
+        }
+        else{
+            res.status(500).send(error);
+        }
+    }
 });
 
 
@@ -288,25 +337,35 @@ app.post('/api/v1/tables', function(req, res){
         nbJoueurs: req.body.nbJoueurs,
         nbJoueursTotal: req.body.nbJoueursTotal
     };
-    checkToken(req, function(result){
+    checkToken(req, checkAuth);
+
+    function checkAuth(result){
         if(!result.error){
-            Tables.insertTable(connection, table, function(id){
-                if(!id.error)
-                    res.status(201).send({id: id});
-                else
-                    res.status(500).send(id);
-            });
+            insertTable();
         }
         else{
             res.status(403).send(result.error);
         }
-    });
+    }
+
+    function insertTable(){
+        Tables.insertTable(connection, table, handleInsertTable);
+    }
+
+    function handleInsertTable(id){
+        if(!id.error)
+            res.status(201).send({id: id});
+        else
+            res.status(500).send(id);
+    }
 });
 
 
 app.get('/api/v1/tables/:id', function(req,res){
     reconnect();
-    Tables.findTableById(connection, req.params.id, function(table){
+    Tables.findTableById(connection, req.params.id, handleFindTable);
+
+    function handleFindTable(table){
         if(!table.error){
             if(table.length > 0)
                 res.status(200).send(table[0]);
@@ -316,37 +375,51 @@ app.get('/api/v1/tables/:id', function(req,res){
         else{
             res.status(500).send(table);
         }
-    });
+    }
 });
 
 app.post('/api/v1/tables/:id/delete', function(req,res){
     reconnect();
-    checkToken(req, function(result){
+    checkToken(req, handleAuth);
+
+    function handleAuth(result){
         if(!result.error){
-            Tables.findTableById(connection, req.params.id, function(table){
-                if(!table.error){
-                    if(table.length > 0){
-                        Tables.deleteTable(connection, req.params.id, function(err){
-                            if(!err){
-                                res.sendStatus(200);
-                            }
-                            else{
-                                res.status(500).send(err);
-                            }
-                        });
-                    }
-                    else
-                        res.status(404).send(table);
-                }
-                else{
-                    res.status(500).send(table);
-                }
-            });
+            findTable();
         }
         else{
             res.status(403).send(result.error);
         }
-    });
+    }
+
+    function findTable(){
+        Tables.findTableById(connection, req.params.id, handleFindTable);
+    }
+
+    function handleFindTable(table){
+        if(!table.error){
+            if(table.length > 0){
+                deleteTable();
+            }
+            else
+                res.status(404).send(table);
+        }
+        else{
+            res.status(500).send(table);
+        }
+    }
+
+    function deleteTable(){
+        Tables.deleteTable(connection, req.params.id, handleDeleteTable);
+    }
+
+    function handleDeleteTable(err){
+        if(!err){
+            res.sendStatus(200);
+        }
+        else{
+            res.status(500).send(err);
+        }
+    }
 });
 
 
@@ -362,48 +435,57 @@ app.put('/api/v1/tables/:id', function(req,res){
         nbJoueurs: req.body.nbJoueurs,
         nbJoueursTotal: req.body.nbJoueursTotal
     };
-    checkToken(req, function(result){
+    checkToken(req, handleAuth);
+
+    function handleAuth(result){
         if(!result.error){
-            Tables.findTableById(connection, req.params.id, function(tableFound){
-                if(!tableFound.error){
-                    if(tableFound.length > 0){
-                        Tables.updateTable(connection, table, req.params.id, function(updatedTable){
-                            if(!updatedTable.error){
-                                res.sendStatus(200);
-                            }
-                            else{
-                                res.status(500).send(updatedTable);
-                            }
-                        });
-                    }
-                    else{
-                        res.status(404).send('No table by this id');
-                    }
-                }
-                else {
-                    res.status(500).send(tableFound);
-                }
-            });
+            findTable();
         }
         else{
             res.status(403).send(result.error);
         }
-    });
+    }
+
+    function findTable(){
+        Tables.findTableById(connection, req.params.id, handleFindTable);
+    }
+
+    function handleFindTable(tableFound){
+        if(!tableFound.error){
+            if(tableFound.length > 0){
+                updateTable();
+            }
+            else{
+                res.status(404).send('No table by this id');
+            }
+        }
+        else {
+            res.status(500).send(tableFound);
+        }
+    }
+
+    function updateTable(){
+        Tables.updateTable(connection, table, req.params.id, handleUpdateTable);
+    }
+
+    function handleUpdateTable(updatedTable){
+        if(!updatedTable.error){
+            res.sendStatus(200);
+        }
+        else{
+            res.status(500).send(updatedTable);
+        }
+    }
 });
 
 app.get('/api/v1/tables/:id/players', function(req, res){
     reconnect();
-    Tables.findTableById(connection, req.params.id, function(table){
+    Tables.findTableById(connection, req.params.id, handleFindTable);
+
+    function handleFindTable(table){
         if(!table.error){
             if(table.length > 0){
-                Tables.findPlayersForTable(connection, req.params.id, function(players){
-                    if(!players.error){
-                        res.status(200).send(players);
-                    }
-                    else{
-                        res.status(500).send(players);
-                    }
-                });
+                findPlayersForTable();
             }
             else
                 res.status(404).send(table);
@@ -411,138 +493,211 @@ app.get('/api/v1/tables/:id/players', function(req, res){
         else{
             res.status(500).send(table);
         }
-    });
+    }
+
+    function findPlayersForTable(){
+        Tables.findPlayersForTable(connection, req.params.id, handleFindPlayersForTable);
+    }
+
+    function handleFindPlayersForTable(players){
+        if(!players.error){
+            res.status(200).send(players);
+        }
+        else{
+            res.status(500).send(players);
+        }
+    }
 });
 
 app.post('/api/v1/tables/:id/players', function(req, res){
     reconnect();
     var user_id = req.body.id;
     var table_id = req.params.id;
-    checkToken(req, function(result){
+    checkToken(req, handleAuth);
+
+    function handleAuth(result){
         if(!result.error){
-            Tables.findTableById(connection, table_id, function(table){
-                if(!table.error){
-                    if(table.length > 0){
-                        Users.findUserById(connection, user_id, function(user){
-                            if(!user.error){
-                                if(user.length > 0){
-                                    Tables.addPlayerToTable(connection, user_id, table_id, function(err){
-                                        if(!err){
-                                            res.sendStatus(200);
-                                        }
-                                        else{
-                                            res.status(500).send(err);
-                                        }
-                                    });
-                                }
-                                else
-                                    res.status(404).send(user);
-                            }
-                            else{
-                                res.status(500).send(user);
-                            }
-                        });
-                    }
-                    else
-                        res.status(404).send(table);
-                }
-                else{
-                    res.status(500).send(table);
-                }
-            });
+            findTable();
         }
         else{
             res.status(403).send(result.error);
         }
-    });
+    }
+
+    function findTable(){
+        Tables.findTableById(connection, table_id, handleFindTable);
+    }
+
+    function handleFindTable(table){
+        if(!table.error){
+            if(table.length > 0){
+                findUser();
+            }
+            else
+                res.status(404).send(table);
+        }
+        else{
+            res.status(500).send(table);
+        }
+    }
+
+    function findUser(){
+        Users.findUserById(connection, user_id, handleFindUser);
+    }
+
+    function handleFindUser(user){
+        if(!user.error){
+            if(user.length > 0){
+                addPlayerToTable();
+            }
+            else
+                res.status(404).send(user);
+        }
+        else{
+            res.status(500).send(user);
+        }
+    }
+
+    function addPlayerToTable(){
+        Tables.addPlayerToTable(connection, user_id, table_id, handleAddPlayerToTable);
+    }
+
+    function handleAddPlayerToTable(err){
+        if(!err){
+            res.sendStatus(200);
+        }
+        else{
+            res.status(500).send(err);
+        }
+    }
+
+
 });
 
 app.post('/api/v1/tables/:idTable/players/:idUser/remove', function(req, res){
     reconnect();
-    checkToken(req, function(result){
-       if(!result.error){
-           Tables.findTableById(connection, req.params.idTable, function(table){
-               if(!table.error){
-                   if(table.length > 0){
-                       Users.findUserById(connection, req.params.idUser, function(user){
-                           if(!user.error){
-                               if(user.length > 0){
-                                   Tables.removePlayerFromTable(connection, req.params.idUser, req.params.idTable, function(err){
-                                       if(!err){
-                                           res.sendStatus(200);
-                                       }
-                                       else{
-                                           res.status(500).send(err);
-                                       }
-                                   });
-                               }
-                               else
-                                   res.status(404).send(user);
-                           }
-                           else{
-                               res.status(500).send(user);
-                           }
-                       });
-                   }
-                   else
-                       res.status(404).send(table);
-               }
-               else{
-                   res.status(500).send(table);
-               }
-           });
-       }
-        else{
-           res.status(403).send(result.error);
-       }
-    });
-});
+    checkToken(req, handleAuth);
 
-app.post('/api/v1/tables/:idTable/players/mail', function(req, res) {
-    reconnect();
-    checkToken(req, function(result){
+    function handleAuth(result){
         if(!result.error){
-            Tables.findTableById(connection, req.params.idTable, function(table) {
-                if (!table.error) {
-                    if (table.length > 0) {
-                        Mails.sendMail(req.body.mail, function(err){
-                            if(!err){
-                                res.sendStatus(200);
-                            }
-                            else{
-                                res.status(500).send(err);
-                            }
-                        });
-                    }
-                }
-                else{
-                    res.status(404).send(table.error);
-                }
-            });
+            findTable();
         }
         else{
             res.status(403).send(result.error);
         }
-    });
+    }
+
+    function findTable(){
+        Tables.findTableById(connection, req.params.idTable, handleFindTable);
+    }
+
+    function handleFindTable(table){
+        if(!table.error){
+            if(table.length > 0){
+                findUser();
+            }
+            else
+                res.status(404).send(table);
+        }
+        else{
+            res.status(500).send(table);
+        }
+    }
+
+    function findUser(){
+        Users.findUserById(connection, req.params.idUser, handleFindUser);
+    }
+
+    function handleFindUser(user){
+        if(!user.error){
+            if(user.length > 0){
+                removePlayerFromTable();
+            }
+            else
+                res.status(404).send(user);
+        }
+        else{
+            res.status(500).send(user);
+        }
+    }
+
+    function removePlayerFromTable(){
+        Tables.removePlayerFromTable(connection, req.params.idUser, req.params.idTable, handleRemovePlayerFromTable);
+    }
+
+    function handleRemovePlayerFromTable(err){
+        if(!err){
+            res.sendStatus(200);
+        }
+        else{
+            res.status(500).send(err);
+        }
+    }
+});
+
+app.post('/api/v1/tables/:idTable/players/mail', function(req, res) {
+    reconnect();
+    checkToken(req, handleAuth);
+
+    function handleAuth(result){
+        if(!result.error){
+            findTable();
+        }
+        else{
+            res.status(403).send(result.error);
+        }
+    }
+
+    function findTable(){
+        Tables.findTableById(connection, req.params.idTable, handleFindTable);
+    }
+
+    function handleFindTable(table){
+        if (!table.error) {
+            if (table.length > 0) {
+                sendMail();
+            }
+        }
+        else{
+            res.status(404).send(table.error);
+        }
+    }
+
+    function sendMail(){
+        Mails.sendMail(req.body.mail, handleSendMail);
+    }
+
+    function handleSendMail(err){
+        if(!err){
+            res.sendStatus(200);
+        }
+        else{
+            res.status(500).send(err);
+        }
+    }
 });
 
 
 /**** FREQUENCES ****/
 app.get('/api/v1/frequences', function(req, res){
     reconnect();
-    Frequences.getAllFrequences(connection, function(freqs){
+    Frequences.getAllFrequences(connection, handleGetAllFrequences);
+
+    function handleGetAllFrequences(freqs){
         if(!freqs.error){
             res.status(200).send(freqs);
         }
         else{
             res.status(500).send(freqs);
         }
-    });
+    }
 });
 
 app.get('/api/v1/frequences/:id', function(req, res){
     reconnect();
-    Frequences.findFrequencesById(connection, req.params.id, function(freq){
+    Frequences.findFrequencesById(connection, req.params.id, handleFindFrequence);
+
+    function handleFindFrequence(freq){
         if(!freq.error){
             if(freq.length > 0){
                 res.status(200).send(freq);
@@ -554,26 +709,30 @@ app.get('/api/v1/frequences/:id', function(req, res){
         else{
             res.status(500).send(freq);
         }
-    })
+    }
 });
 
 
 /**** STATUS ****/
 app.get('/api/v1/status', function(req, res){
     reconnect();
-    Status.getAllStatus(connection, function(status){
+    Status.getAllStatus(connection, handleGetAllStatus);
+
+    function handleGetAllStatus(status){
         if(!status.error){
             res.status(200).send(status);
         }
         else{
             res.status(500).send(status);
         }
-    });
+    }
 });
 
 app.get('/api/v1/status/:id', function(req, res){
     reconnect();
-    Status.findStatusById(connection, req.params.id, function(status){
+    Status.findStatusById(connection, req.params.id, handleFindStatus);
+
+    function handleFindStatus(status){
         if(!status.error){
             if(status.length > 0){
                 res.status(200).send(status);
@@ -585,26 +744,30 @@ app.get('/api/v1/status/:id', function(req, res){
         else{
             res.status(500).send(status);
         }
-    })
+    }
 });
 
 
 /**** GAMES ****/
 app.get('/api/v1/games', function(req, res){
     reconnect();
-    Games.getAllGames(connection, function(games){
+    Games.getAllGames(connection, handleGetAllGames);
+
+    function handleGetAllGames(games){
         if(!games.error){
             res.status(200).send(games);
         }
         else{
             res.status(500).send(games);
         }
-    });
+    }
 });
 
 app.get('/api/v1/games/:id', function(req, res){
-    Games.findGameById(connection, req.params.id, function(games){
-        reconnect();
+    reconnect();
+    Games.findGameById(connection, req.params.id, handleFindGame);
+
+    function handleFindGame(games){
         if(!games.error){
             if(games.length > 0){
                 res.status(200).send(games[0]);
@@ -616,7 +779,7 @@ app.get('/api/v1/games/:id', function(req, res){
         else{
             res.status(500).send(games);
         }
-    });
+    }
 });
 
 app.put('/api/v1/games/:id', function(req, res){
@@ -625,33 +788,47 @@ app.put('/api/v1/games/:id', function(req, res){
         nom: req.body.nom,
         description: req.body.description
     };
-    checkToken(req, function(result){
+    checkToken(req, handleAuth);
+
+    function handleAuth(result){
         if(!result.error){
-            Games.findGameById(connection, req.params.id, function(gameFound){
-                if(!gameFound.error){
-                    if(gameFound.length > 0){
-                        Games.updateGame(connection, game, req.params.id, function(updatedGame){
-                            if(!updatedGame.error){
-                                res.sendStatus(200);
-                            }
-                            else{
-                                res.status(500).send(updatedGame);
-                            }
-                        });
-                    }
-                    else{
-                        res.status(404).send('No game by this id');
-                    }
-                }
-                else{
-                    res.status(500).send(gameFound);
-                }
-            });
+            findGame();
         }
         else{
             res.status(403).send(result.error);
         }
-    });
+    }
+
+    function findGame(){
+        Games.findGameById(connection, req.params.id, handleFindGame);
+    }
+
+    function handleFindGame(gameFound){
+        if(!gameFound.error){
+            if(gameFound.length > 0){
+                updateGame();
+            }
+            else{
+                res.status(404).send('No game by this id');
+            }
+        }
+        else{
+            res.status(500).send(gameFound);
+        }
+    }
+
+    function updateGame(){
+        Games.updateGame(connection, game, req.params.id, handleUpdateGame);
+    }
+
+    function handleUpdateGame(updatedGame){
+        if(!updatedGame.error){
+            res.sendStatus(200);
+        }
+        else{
+            res.status(500).send(updatedGame);
+        }
+    }
 });
 
 app.post('/api/v1/games', function(req, res){
@@ -660,19 +837,27 @@ app.post('/api/v1/games', function(req, res){
         nom: req.body.nom,
         description: req.body.description
     };
-    checkToken(req, function(result){
+    checkToken(req, handleAuth);
+
+    function handleAuth(result){
         if(!result.error){
-            Games.insertGame(connection, game, function(id){
-                if(!id.error)
-                    res.status(201).send({id: id});
-                else
-                    res.status(500).send(id);
-            })
+            insertGame();
         }
         else{
             res.status(403).send(result.error);
         }
-    });
+    }
+
+    function insertGame(){
+        Games.insertGame(connection, game, handleInsertGame);
+    }
+
+    function handleInsertGame(id){
+        if(!id.error)
+            res.status(201).send({id: id});
+        else
+            res.status(500).send(id);
+    }
 });
 
 var checkToken = function(req, callback){
