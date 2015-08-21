@@ -12,4 +12,19 @@ Application to manage role play games and tables in an association / group
 * RESTful API
 * MySQL database
 
-Run `npm install`, then `npm start`.(Port 9000)
+## Environment variables
+### Obligatory
+* MAIL_ADRESSE
+* MAIL_PASSWORD
+* WEBTOKEN_SECRET
+* USERCREATION_CODE
+
+### Optionals
+* PORT
+* CLEARDB_DATABASE_URL (plugin Heroku to host MySQL database. If does not exist, connects to a local instance of MySQL Server. See `back/database.js`)
+
+## Installation
+`npm install`
+
+## Run
+`foreman start`
