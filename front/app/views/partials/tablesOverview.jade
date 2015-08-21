@@ -5,12 +5,12 @@ div.container
     div(ng-if='tablesForMJ.length > 0')
         h2 Tables que vous masterisez
         div(ng-repeat='tableForMJ in tablesForMJ')
-            mjtables-table(tableid='tableForMJ.id')
+            mjtables-table(tableid='tableForMJ.id' refreshOnPlayerMovement=false)
     div(ng-if='tablesForPlayer.length > 0')
         h2 Tables auxquelles vous participez
         div(ng-repeat='tableForPlayer in tablesForPlayer')
-            mjtables-table(tableid='tableForPlayer.id')
+            mjtables-table(tableid='tableForPlayer.id' refreshOnPlayerMovement=false)
     div(ng-if='otherTables.length > 0')
         h2 Autres tables
         div(ng-repeat='otherTable in otherTables')
-            mjtables-table(tableid='otherTable.id')
+            mjtables-table(tableid='otherTable.id' refreshOnPlayerMovement=false)
