@@ -13,7 +13,7 @@ Application to manage role play games and tables in an association / group
 * MySQL database
 
 ## Environment variables
-### Obligatory
+### Required
 * MAIL_ADRESSE
 * MAIL_PASSWORD
 * WEBTOKEN_SECRET
