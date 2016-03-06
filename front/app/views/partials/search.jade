@@ -30,7 +30,7 @@ div.container
         button.btn.btn-block.btn-primary(ng-click='search()') Rechercher
     div(ng-if='resultats && resultats.length == 0')
         div.alert.alert-warning Aucune table n'a été trouvée
-    div(ng-if="resultats.length > 0")
+    div.table-responsive(ng-if="resultats.length > 0")
         table.table
             thead
                 tr
