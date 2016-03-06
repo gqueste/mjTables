@@ -1,6 +1,6 @@
 angular.module('mjTables').
 
-    controller('MailCtrl', ['$scope', '$rootScope', '$modalInstance', 'destinatairesIds', 'envoyeurId', 'UserAPI', 'idTable', 'TableAPI', 'TextAngularService', function($scope, $rootScope, $modalInstance, destinatairesIds, envoyeurId, UserAPI, idTable, TableAPI, TextAngularService){
+    controller('MailCtrl', ['$scope', '$rootScope', '$modalInstance', 'destinatairesIds', 'envoyeurId', 'UserAPI', 'idTable', 'TableAPI', 'TextAngularService', '$q', function($scope, $rootScope, $modalInstance, destinatairesIds, envoyeurId, UserAPI, idTable, TableAPI, TextAngularService, $q){
 
         $scope.mail = {};
         $scope.textAngular = TextAngularService;
@@ -8,21 +8,22 @@ angular.module('mjTables').
         init();
 
         function init(){
-            UserAPI.getUser(envoyeurId).then(function(user){
-                $scope.mail.envoyeur = user;
+            UserAPI.getUser(envoyeurId)
+                .then(function(user){
+                    $scope.mail.envoyeur = user;
+                    $scope.mail.destinataires = [];
 
-                $scope.mail.destinataires = [];
-                for(var i = 0; i < destinatairesIds.length; i++){
-                    if(destinatairesIds[i] != envoyeurId){
-                        UserAPI.getUser(destinatairesIds[i]).then(function(user2){
-                            $scope.mail.destinataires.push(user2);
-                        }).catch(function(error){
-                            console.log(error);
-                        })
-                    }
-                }
-                $scope.mail.destinataires.push($scope.mail.envoyeur);
-            });
+                    return $q.all(destinatairesIds.map(function(destinataireId){
+                        if(destinataireId != envoyeurId){
+                            return UserAPI.getUser(destinataireId);
+                        }
+                    }));
+                })
+                .then(function(users){
+                    $scope.mail.destinataires = users;
+                    $scope.mail.destinataires.push($scope.mail.envoyeur);
+                })
+            ;
 
         }
 

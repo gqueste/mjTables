@@ -1,6 +1,6 @@
 angular.module('mjTables').
 
-    controller('GameCtrl', ['$scope', 'GameAPI', 'TableAPI', '$state', '$modal', function($scope, GameAPI, TableAPI, $state, $modal){
+    controller('GameCtrl', ['$scope', 'GameAPI', 'TableAPI', '$state', '$modal', '$q', function($scope, GameAPI, TableAPI, $state, $modal, $q){
 
         $scope.game = {};
         $scope.tables = [];
@@ -9,6 +9,7 @@ angular.module('mjTables').
         init();
 
         function init(message){
+            $scope.tables = [];
             $scope.messageSuccess = message;
             GameAPI.getGame($scope.gameid).then(function(game){
                 $scope.game = game;
@@ -17,15 +18,14 @@ angular.module('mjTables').
             });
 
             TableAPI.findTablesForGame($scope.gameid).then(function(tables){
-                $scope.tables = [];
-                for(var i = 0; i < tables.length; i++){
-                    TableAPI.getTable(tables[i].id).then(function(table){
-                        $scope.tables.push(table);
-                    }).catch(function(error){
-                        console.log(error);
-                    })
-                }
-            }).catch(function(error){
+                return $q.all(tables.map(function(table){
+                    return TableAPI.getTable(table.id);
+                }));
+            })
+            .then(function(tables){
+                $scope.tables = tables;
+            })
+            .catch(function(error){
                 console.log(error);
             });
         }

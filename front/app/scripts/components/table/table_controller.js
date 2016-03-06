@@ -1,6 +1,6 @@
 angular.module('mjTables').
 
-    controller('TableCtrl', ['$scope', '$rootScope', 'TableAPI', 'UserAPI', 'ConnexionService', '$modal', function($scope, $rootScope, TableAPI, UserAPI, ConnexionService, $modal){
+    controller('TableCtrl', ['$scope', '$rootScope', 'TableAPI', 'UserAPI', 'ConnexionService', '$modal', '$q', function($scope, $rootScope, TableAPI, UserAPI, ConnexionService, $modal, $q){
 
         $scope.table = {};
         $scope.players = [];
@@ -11,27 +11,21 @@ angular.module('mjTables').
         init();
 
         function init(messageErreur, messageSuccess){
+            $scope.players = [];
             $scope.messageErreur = messageErreur;
             $scope.messageSuccess = messageSuccess;
             TableAPI.getTable($scope.tableid)
                 .then(function(table){
                     $scope.table = table;
-                    TableAPI.getPlayersForTable($scope.tableid)
-                        .then(function(players_ids){
-                            $scope.players = [];
-                            for(var i = 0; i < players_ids.length; i++){
-                                UserAPI.getUser(players_ids[i].user_id)
-                                    .then(function(user){
-                                        $scope.players.push(user);
-                                    })
-                                    .catch(function(error){
-                                        console.log(error);
-                                    })
-                            }
-                        })
-                        .catch(function(error){
-                            console.log(error);
-                        })
+                    return TableAPI.getPlayersForTable($scope.tableid)
+                })
+                .then(function(players_ids){
+                    return $q.all(players_ids.map(function(playerId){
+                        return UserAPI.getUser(playerId.user_id);
+                    }));
+                })
+                .then(function(players){
+                    $scope.players = players;
                 })
                 .catch(function(error){
                    console.log(error);
@@ -49,7 +43,7 @@ angular.module('mjTables').
                     ret = true;
                     break;
                 }
-            }
+                }
             return ret;
         };
 
